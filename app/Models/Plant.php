@@ -24,7 +24,8 @@ class Plant extends Model
     protected $fillable = [
         'user_id',
         'plant_classification_id',
-        'bonsai_style_id', 'name',
+        'bonsai_style_id',
+        'name',
         'specimen',
         'age',
         'description',
@@ -37,7 +38,17 @@ class Plant extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'user_id'                 => 'required|exists:users,id',
+            'plant_classification_id' => 'required|exists:plant_classifications,id',
+            'bonsai_style_id'         => 'required|exists:bonsai_styles,id',
+            'name'                    => 'required|min:3|max:64',
+            'specimen'                => '',
+            'age'                     => 'date',
+            'description'             => '',
+            'main_picture'            => '',
+            'height'                  => ''
+        );
     }
 
     /**
@@ -45,7 +56,7 @@ class Plant extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array();
     }
 
     /**

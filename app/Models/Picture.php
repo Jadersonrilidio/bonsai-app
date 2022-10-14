@@ -31,7 +31,10 @@ class Picture extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'plant_id' => 'required|exists:plants,id',
+            'picture'  => 'required'
+        );
     }
 
     /**
@@ -39,7 +42,7 @@ class Picture extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array();
     }
 
     /**

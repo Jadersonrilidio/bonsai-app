@@ -30,7 +30,9 @@ class BonsaiStyle extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'title' => "required|unique:bonsai_styles,id'{$this->id}" //TODO
+        );
     }
 
     /**
@@ -38,7 +40,10 @@ class BonsaiStyle extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array(
+            'title.required' => 'The title is required',
+            'title.unique'   => 'The title must be unique'
+        );
     }
 
     /**

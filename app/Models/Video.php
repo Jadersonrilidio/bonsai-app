@@ -31,7 +31,10 @@ class Video extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'plant_id' => 'required|exists:plants,id',
+            'video'    => 'required'
+        );
     }
 
     /**
@@ -39,7 +42,7 @@ class Video extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array();
     }
 
     /**

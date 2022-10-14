@@ -31,7 +31,10 @@ class Observation extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'intervention_id' => 'required|exists:internvetions,id',
+            'observation'     => 'required|string'
+        );
     }
 
     /**
@@ -39,6 +42,14 @@ class Observation extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array();
+    }
+
+    /**
+     * 
+     */
+    public function intervention()
+    {
+        return $this->hasOne('App\Models\Intervention', 'intervention_id', 'id');
     }
 }

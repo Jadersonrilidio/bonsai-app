@@ -33,7 +33,12 @@ class Intervention extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'plant_id'                       => 'required|exists:plants,id',
+            'intervention_classification_id' => 'required|exists:intervention_classifications,id',
+            'date'                           => 'required|date',
+            'description'                    => ''
+        );
     }
 
     /**
@@ -41,7 +46,7 @@ class Intervention extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array();
     }
 
     /**
@@ -68,4 +73,3 @@ class Intervention extends Model
         return $this->belongsToMany('App\Models\Observation', 'observations', 'intervention_id', 'id');
     }
 }
-

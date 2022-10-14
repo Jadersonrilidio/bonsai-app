@@ -31,7 +31,9 @@ class PlantClassification extends Model
      */
     public function rules()
     {
-        //TODO
+        return array(
+            'title' => "required|unique:plant_classifications,id,{$this->id}" //TODO
+        );
     }
 
     /**
@@ -39,7 +41,10 @@ class PlantClassification extends Model
      */
     public function feedback()
     {
-        //TODO
+        return array(
+            'title.required' => 'The title is required',
+            'title.unique'   => 'The title must be unique'
+        );
     }
 
     /**

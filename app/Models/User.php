@@ -45,22 +45,6 @@ class User extends Authenticatable
     /**
      * 
      */
-    public function rules()
-    {
-        //TODO
-    }
-
-    /**
-     * 
-     */
-    public function feedback()
-    {
-        //TODO
-    }
-
-    /**
-     * 
-     */
     public function plants()
     {
         return $this->belongsToMany('App\Models\Plant', 'plants', 'user_id', 'id');
