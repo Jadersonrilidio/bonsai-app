@@ -8,4 +8,45 @@ use Illuminate\Database\Eloquent\Model;
 class Video extends Model
 {
     use HasFactory;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'videos';
+
+    /**
+     * The attributes allowed to manipulate by eloquent.
+     * 
+     * @var array
+     */
+    protected $fillable = [
+        'plant_id',
+        'video'
+    ];
+
+    /**
+     * 
+     */
+    public function rules()
+    {
+        //TODO
+    }
+
+    /**
+     * 
+     */
+    public function feedback()
+    {
+        //TODO
+    }
+
+    /**
+     * 
+     */
+    public function plant()
+    {
+        return $this->hasOne('App\Models\Plant', 'plant_id', 'id');
+    }
 }
