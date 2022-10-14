@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateObservationsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('observations', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('intervention_id');
+            $table->text('observation');
+            $table->timestamps();
+
+            $table->foreign('intervention_id')->references('id')->on('interventions');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('observations', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('intervention_id');
+        });
+
+        Schema::dropIfExists('observations');
+    }
+}
