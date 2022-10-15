@@ -4,8 +4,23 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use App\Models\PlantClassification;
+
 class StorePlantClassificationRequest extends FormRequest
 {
+    /**
+     * //TODO
+     */
+    protected $plantClassification;
+
+    /**
+     * //TODO
+     */
+    public function __construct(PlantClassification $plantClassification)
+    {
+        $this->plantClassification = $plantClassification;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,13 +33,12 @@ class StorePlantClassificationRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     * //TODO
      *
      * @return array
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return $this->plantClassification->rules();
     }
 }
