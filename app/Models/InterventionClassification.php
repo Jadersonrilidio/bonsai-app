@@ -31,7 +31,7 @@ class InterventionClassification extends Model
     public function rules()
     {
         return array(
-            'title' => "required|unique:intervention_classifications,title,{$this->id}" //TODO
+            'title' => "required|unique:intervention_classifications,title,{$this->id}"
         );
     }
 
