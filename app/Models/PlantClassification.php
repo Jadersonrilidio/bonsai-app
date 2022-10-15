@@ -32,7 +32,7 @@ class PlantClassification extends Model
     public function rules()
     {
         return array(
-            'title' => "required|unique:plant_classifications,id,{$this->id}" //TODO
+            'title' => "required|unique:plant_classifications,title,{$this->id}" //TODO
         );
     }
 

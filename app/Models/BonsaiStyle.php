@@ -31,7 +31,7 @@ class BonsaiStyle extends Model
     public function rules()
     {
         return array(
-            'title' => "required|unique:bonsai_styles,id'{$this->id}" //TODO
+            'title' => "required|unique:bonsai_styles,title,{$this->id}"
         );
     }
 

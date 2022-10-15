@@ -28,9 +28,7 @@ class BonsaiStyleController extends Controller
      * 
      * @var array
      */
-    protected $headerOptions = array(
-        'Content-Type' => 'application/json'
-    );
+    protected $headerOptions = array();
 
     /**
      * BonsaiStyleController constructor method.
@@ -68,16 +66,6 @@ class BonsaiStyleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreBonsaiStyleRequest  $request
@@ -85,51 +73,70 @@ class BonsaiStyleController extends Controller
      */
     public function store(StoreBonsaiStyleRequest $request)
     {
-        //
+        $request->validate($this->bonsaiStyle->rules(), $this->bonsaiStyle->feedback());
+
+        $newBonsaiStyle = $this->bonsaiStyle->create($request->all());
+
+        return response()->json($newBonsaiStyle, 201, $this->headerOptions);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\BonsaiStyle  $bonsaiStyle
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(BonsaiStyle $bonsaiStyle)
+    public function show($id)
     {
-        //
-    }
+        $bonsaiStyle = $this->bonsaiStyle->find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\BonsaiStyle  $bonsaiStyle
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(BonsaiStyle $bonsaiStyle)
-    {
-        //
+        if ($bonsaiStyle == null)
+            return $this->notFound();
+
+        return response()->json($bonsaiStyle, 200, $this->headerOptions);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateBonsaiStyleRequest  $request
-     * @param  \App\Models\BonsaiStyle  $bonsaiStyle
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBonsaiStyleRequest $request, BonsaiStyle $bonsaiStyle)
+    public function update(UpdateBonsaiStyleRequest $request, $id)
     {
-        //
+        $bonsaiStyle = $this->bonsaiStyle->find($id);
+
+        if ($bonsaiStyle == null)
+            return $this->notFound();
+
+        $rules = $this->rewriteRules($request, $bonsaiStyle);
+
+        $request->validate($rules, $bonsaiStyle->feedback());
+
+        $bonsaiStyle->fill($request->all());
+
+        $bonsaiStyle->save();
+
+        return response()->json($bonsaiStyle, 200, $this->headerOptions);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\BonsaiStyle  $bonsaiStyle
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BonsaiStyle $bonsaiStyle)
+    public function destroy($id)
     {
-        //
+        $bonsaiStyle = $this->bonsaiStyle->find($id);
+
+        if ($bonsaiStyle == null)
+            return $this->notFound();
+
+        $deletedBonsaiStyle = $bonsaiStyle;
+        $bonsaiStyle->delete();
+
+        return response()->json($deletedBonsaiStyle, 200, $this->headerOptions);
     }
 }
