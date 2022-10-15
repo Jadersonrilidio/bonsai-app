@@ -24,17 +24,6 @@ class BonsaiStyleController extends Controller
     public $bonsaiStyle;
 
     /**
-     * //TODO
-     * 
-     * @var array
-     */
-    protected $storageVars = array(
-        'input' => 'image',
-        'path' => 'images',
-        'disk' => 'public'
-    );
-
-    /**
      * Request header options.
      * 
      * @var array
@@ -72,7 +61,7 @@ class BonsaiStyleController extends Controller
 
         if ($attr)
             $bonsaiStyleRepository->selectColumnsFromModel($attr);
-        
+
         $bonsaiStyles = $bonsaiStyleRepository->getCollection();
 
         return response()->json($bonsaiStyles, 200, $this->headerOptions);

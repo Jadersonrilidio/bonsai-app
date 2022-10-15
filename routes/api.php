@@ -18,17 +18,37 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//          /api/v1/
+Route::prefix('/v1')->group(function () {
+    Route::apiResource('bonsai-style', 'App\Http\Controllers\BonsaiStyleController');
+    Route::apiResource('plant-classification', 'App\Http\Controllers\PlantClassificationController');
+    Route::apiResource('intervention-classification', 'App\Http\Controllers\InterventionClassificationController');
+    Route::apiResource('plant', 'App\Http\Controllers\PlantController');
+    Route::apiResource('picture', 'App\Http\Controllers\PictureController');
+    Route::apiResource('video', 'App\Http\Controllers\VideoController');
+    Route::apiResource('intervention', 'App\Http\Controllers\InterventionController');
+    Route::apiResource('observation', 'App\Http\Controllers\ObservationController');
+});
 
-Route::prefix('/v1')->apiResource('bonsai-style', 'App\Http\Controllers\BonsaiStyleController');
-Route::prefix('/v1')->apiResource('plant-classification', 'App\Http\Controllers\PlantClassificationController');
-Route::prefix('/v1')->apiResource('intervention-classification', 'App\Http\Controllers\InterventionClassificationController');
+// Route::prefix('/v1')->middleware('api')->group(function () {
 
-Route::prefix('/v1')->apiResource('plant', 'App\Http\Controllers\PlantController');
+//     Route::middleware('jwt')->group(function () {
+//         Route::apiResource('bonsai-style', 'App\Http\Controllers\BonsaiStyleController');
+//         Route::apiResource('plant-classification', 'App\Http\Controllers\PlantClassificationController');
+//         Route::apiResource('intervention-classification', 'App\Http\Controllers\InterventionClassificationController');
+//         Route::apiResource('plant', 'App\Http\Controllers\PlantController');
+//         Route::apiResource('picture', 'App\Http\Controllers\PictureController');
+//         Route::apiResource('video', 'App\Http\Controllers\VideoController');
+//         Route::apiResource('intervention', 'App\Http\Controllers\InterventionController');
+//         Route::apiResource('observation', 'App\Http\Controllers\ObservationController');
 
-Route::prefix('/v1')->apiResource('picture', 'App\Http\Controllers\PictureController');
-Route::prefix('/v1')->apiResource('video', 'App\Http\Controllers\VideoController');
+//         Route::prefix('/auth')->group(function () {
+//             Route::post('/me', [App\Http\Controllers\BonsaiStyleController::class, 'me']);
+//             Route::post('/logout', [App\Http\Controllers\BonsaiStyleController::class, 'logout']);
+//         });
+//     });
 
-Route::prefix('/v1')->apiResource('intervention', 'App\Http\Controllers\InterventionController');
-
-Route::prefix('/v1')->apiResource('observation', 'App\Http\Controllers\ObservationController');
+//     Route::prefix('/auth')->group(function () {
+//         Route::post('/login', [App\Http\Controllers\BonsaiStyleController::class, 'login']);
+//         Route::post('/refresh', [App\Http\Controllers\BonsaiStyleController::class, 'refresh']);
+//     });
+// });
