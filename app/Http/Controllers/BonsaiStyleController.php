@@ -2,20 +2,80 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreBonsaiStyleRequest;
 use App\Http\Requests\UpdateBonsaiStyleRequest;
 use App\Models\BonsaiStyle;
 
+use App\Repositories\BonsaiStyleRepository;
+use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\StandardStorage;
+use App\Http\Controllers\Traits\RewriteModelRules;
+
 class BonsaiStyleController extends Controller
 {
+    use ErrorResponses, StandardStorage, RewriteModelRules;
+
+    /**
+     * BonsaiStyle model instance.
+     * 
+     * @var App\Models\BonsaiStyle
+     */
+    public $bonsaiStyle;
+
+    /**
+     * //TODO
+     * 
+     * @var array
+     */
+    protected $storageVars = array(
+        'input' => 'image',
+        'path' => 'images',
+        'disk' => 'public'
+    );
+
+    /**
+     * Request header options.
+     * 
+     * @var array
+     */
+    protected $headerOptions = array(
+        'Content-Type' => 'application/json'
+    );
+
+    /**
+     * BonsaiStyleController constructor method.
+     * 
+     * @param  App\Models\BonsaiStyle  $bonsaiStyle
+     * @return void
+     */
+    public function __construct(BonsaiStyle $bonsaiStyle)
+    {
+        $this->bonsaiStyle = $bonsaiStyle;
+    }
+
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $filter =  $request->get('filter') ?? '';
+        $attr = $request->get('attr') ?? '';
+
+        $bonsaiStyleRepository = new BonsaiStyleRepository($this->bonsaiStyle);
+
+        if ($filter)
+            $bonsaiStyleRepository->filterRegistersFromModel($filter);
+
+        if ($attr)
+            $bonsaiStyleRepository->selectColumnsFromModel($attr);
+        
+        $bonsaiStyles = $bonsaiStyleRepository->getCollection();
+
+        return response()->json($bonsaiStyles, 200, $this->headerOptions);
     }
 
     /**
