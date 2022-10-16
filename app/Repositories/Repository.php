@@ -64,7 +64,7 @@ abstract class Repository
      */
     public function selectColumnsFromRelationship(string $relationship, string $attr = '')
     {
-        $query = ($attr)
+        $query = ($attr and $attr != '')
             ? $relationship . ':id,' . $attr
             : $relationship;
 

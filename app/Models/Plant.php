@@ -43,11 +43,11 @@ class Plant extends Model
             'plant_classification_id' => 'required|exists:plant_classifications,id',
             'bonsai_style_id'         => 'required|exists:bonsai_styles,id',
             'name'                    => 'required|min:3|max:64',
-            'specimen'                => '',
+            'specimen'                => 'string|max:128',
             'age'                     => 'date',
-            'description'             => '',
-            'main_picture'            => '',
-            'height'                  => ''
+            'description'             => 'string',
+            'main_picture'            => 'file|mimes:png,jpeg,jpg',
+            'height'                  => 'numeric'
         );
     }
 
@@ -64,7 +64,7 @@ class Plant extends Model
      */
     public function user()
     {
-        return $this->hasOne('App\Models\User', 'user_id', 'id');
+        return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
 
     /**
@@ -72,7 +72,7 @@ class Plant extends Model
      */
     public function plantClassification()
     {
-        return $this->hasOne('App\Models\PlantClassification', 'plant_classification_id', 'id');
+        return $this->hasOne('App\Models\PlantClassification', 'id', 'plant_classification_id');
     }
 
     /**
@@ -80,7 +80,7 @@ class Plant extends Model
      */
     public function bonsaiStyle()
     {
-        return $this->hasOne('App\Models\BonsaiStyle', 'bonsai_style_id', 'id');
+        return $this->hasOne('App\Models\BonsaiStyle', 'id', 'bonsai_style_id');
     }
 
     /**
@@ -88,7 +88,7 @@ class Plant extends Model
      */
     public function interventions()
     {
-        return $this->belongsToMany('App\Models\Intervention', 'interventions', 'plant_id', 'id');
+        return $this->belongsTo('App\Models\Intervention', 'plant_id', 'id');
     }
 
     /**
@@ -96,7 +96,7 @@ class Plant extends Model
      */
     public function pictures()
     {
-        return $this->belongsToMany('App\Models\Picture', 'pictures', 'plant_id', 'id');
+        return $this->belongsTo('App\Models\Picture', 'plant_id', 'id');
     }
 
     /**
@@ -104,6 +104,6 @@ class Plant extends Model
      */
     public function videos()
     {
-        return $this->belongsToMany('App\Models\Video', 'videos', 'plant_id', 'id');
+        return $this->belongsTo('App\Models\Video', 'plant_id', 'id');
     }
 }
