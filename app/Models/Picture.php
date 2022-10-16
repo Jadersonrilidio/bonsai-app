@@ -50,6 +50,6 @@ class Picture extends Model
      */
     public function plant()
     {
-        return $this->hasOne('App\Models\Plant', 'plant_id', 'id');
+        return $this->hasOne('App\Models\Plant', 'id', 'plant_id');
     }
 }

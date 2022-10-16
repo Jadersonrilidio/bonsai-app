@@ -12,10 +12,6 @@ use App\Http\Controllers\Traits\ErrorResponses;
 use App\Repositories\PlantRepository;
 use Illuminate\Support\Facades\Storage;
 
-use App\Models\PlantClassification;
-use App\Models\BonsaiStyle;
-use App\Models\User;
-
 class PlantController extends Controller
 {
     use ErrorResponses, RewriteModelRules, StandardStorage;
