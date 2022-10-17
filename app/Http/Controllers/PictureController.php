@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePictureRequest;
 use App\Http\Requests\UpdatePictureRequest;
 use App\Models\Picture;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\RewriteModelRules;
 use App\Http\Controllers\Traits\StandardStorage;

@@ -32,7 +32,7 @@ class Observation extends Model
     public function rules()
     {
         return array(
-            'intervention_id' => 'required|exists:internvetions,id',
+            'intervention_id' => 'required|exists:interventions,id',
             'observation'     => 'required|string'
         );
     }
@@ -50,6 +50,6 @@ class Observation extends Model
      */
     public function intervention()
     {
-        return $this->hasOne('App\Models\Intervention', 'intervention_id', 'id');
+        return $this->hasOne('App\Models\Intervention', 'id', 'intervention_id');
     }
 }

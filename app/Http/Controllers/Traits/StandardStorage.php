@@ -10,10 +10,26 @@ trait StandardStorage
      * Image storage handler to standardize and facilitate storage.
      * 
      * @param  Illuminate\Http\Request  $request
-     * @param  array  @vars
+     * @param  array  $vars
      * @return string|bool
      */
     function storeImage(Request $request, array $vars = ['input' => 'image', 'path' => 'images', 'disk' => 'public'])
+    {
+        extract($vars);
+
+        return $request
+            ->file($input)
+            ->store($path, $disk);
+    }
+
+    /**
+     * Video storage handler to standardize and facilitate storage.
+     * 
+     * @param  Illuminate\Http\Request  $request
+     * @param  array  $vars
+     * @return string|bool
+     */
+    function storeVideo(Request $request, array $vars = ['input' => 'video', 'path' => 'videos', 'disk' => 'public'])
     {
         extract($vars);
 
