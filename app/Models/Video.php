@@ -33,7 +33,7 @@ class Video extends Model
     {
         return array(
             'plant_id' => 'required|exists:plants,id',
-            'video'    => 'required'
+            'video'    => 'required|file|mimes:mp4'
         );
     }
 
