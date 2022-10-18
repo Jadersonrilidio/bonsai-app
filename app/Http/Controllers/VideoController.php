@@ -49,6 +49,7 @@ class VideoController extends Controller
      */
     public function __construct(Video $video)
     {
+        $this->middleware('auth.jwt');
         $this->video = $video;
     }
 

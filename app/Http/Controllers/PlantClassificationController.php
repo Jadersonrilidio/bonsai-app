@@ -46,6 +46,7 @@ class PlantClassificationController extends Controller
      */
     public function __construct(PlantClassification $plantClassification)
     {
+        $this->middleware('auth.jwt');
         $this->plantClassification = $plantClassification;
     }
 

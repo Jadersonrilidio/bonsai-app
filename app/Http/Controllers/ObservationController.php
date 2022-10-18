@@ -37,6 +37,7 @@ class ObservationController extends Controller
      */
     public function __construct(Observation $observation)
     {
+        $this->middleware('auth.jwt');
         $this->observation = $observation;
     }
 

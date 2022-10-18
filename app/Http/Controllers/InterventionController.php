@@ -37,6 +37,7 @@ class InterventionController extends Controller
      */
     public function __construct(Intervention $intervention)
     {
+        $this->middleware('auth.jwt');
         $this->intervention = $intervention;
     }
 

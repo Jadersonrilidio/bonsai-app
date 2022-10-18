@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/v1')->middleware('auth.jwt')->group(function () {
+Route::prefix('/v1')->group(function () {
     Route::apiResource('bonsai-style', 'App\Http\Controllers\BonsaiStyleController');
     Route::apiResource('plant-classification', 'App\Http\Controllers\PlantClassificationController');
     Route::apiResource('intervention-classification', 'App\Http\Controllers\InterventionClassificationController');
@@ -28,9 +28,6 @@ Route::prefix('/v1')->middleware('auth.jwt')->group(function () {
 Route::prefix('/auth')->group(function () {
     Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
     Route::post('refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
-
-    Route::middleware('auth.jwt')->group(function () {
-        Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout']);
-        Route::post('me', [App\Http\Controllers\AuthController::class, 'me']);
-    });
+    Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout']);
+    Route::post('me', [App\Http\Controllers\AuthController::class, 'me']);
 });

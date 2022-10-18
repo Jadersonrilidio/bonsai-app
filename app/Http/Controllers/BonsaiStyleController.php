@@ -38,6 +38,7 @@ class BonsaiStyleController extends Controller
      */
     public function __construct(BonsaiStyle $bonsaiStyle)
     {
+        $this->middleware('auth.jwt');
         $this->bonsaiStyle = $bonsaiStyle;
     }
 

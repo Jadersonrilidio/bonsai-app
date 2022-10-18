@@ -10,6 +10,18 @@ class AuthController extends Controller
     use ErrorResponses;
 
     /**
+     * Class instance constructor method.
+     * 
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth.jwt', [
+            'except' => ['login', 'refresh']
+        ]);
+    }
+
+    /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -17,7 +29,7 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
-        
+
         $token = auth('api')->attempt($credentials);
 
         return ($token)

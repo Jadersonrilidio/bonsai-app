@@ -50,6 +50,7 @@ class PictureController extends Controller
      */
     public function __construct(Picture $picture)
     {
+        $this->middleware('auth.jwt');
         $this->picture = $picture;
     }
 

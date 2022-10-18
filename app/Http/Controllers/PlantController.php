@@ -49,6 +49,7 @@ class PlantController extends Controller
      */
     public function __construct(Plant $plant)
     {
+        $this->middleware('auth.jwt');
         $this->plant = $plant;
     }
 
@@ -60,39 +61,48 @@ class PlantController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $user_attr = $request->get('user_attr') ?? '';
-        $class_attr = $request->get('class_attr') ?? '';
-        $style_attr = $request->get('style_attr') ?? '';
-        $int_attr = $request->get('int_attr') ?? '';
-        $pics_attr = $request->get('pics_attr') ?? '';
-        $vids_attr = $request->get('vids_attr') ?? '';
+        // $filter = $request->get('filter') ?? '';
+        // $attr = $request->get('attr') ?? '';
+        // $user_attr = $request->get('user_attr') ?? '';
+        // $class_attr = $request->get('class_attr') ?? '';
+        // $style_attr = $request->get('style_attr') ?? '';
+        // $int_attr = $request->get('int_attr') ?? '';
+        // $pics_attr = $request->get('pics_attr') ?? '';
+        // $vids_attr = $request->get('vids_attr') ?? '';
+
+        //TODO
+        // this function may extract all above variables automaticaly, therefore we'd assure its existence by functions isset() and empty()
+        extract($request->all());
 
         $plantRepository = new PlantRepository($this->plant);
 
-        if ($filter)
+        //TODO
+        // confirm that an API could check the user_id by the auth() helper without connection with the site session.
+        $userIdFilter = 'user_id:=:' . auth()->user()->id;
+        $plantRepository->filterRegistersFromModel($userIdFilter);
+        
+        if (isset($filter) and !empty($filter))
             $plantRepository->filterRegistersFromModel($filter);
-        
-        if ($attr)
+
+        if (isset($attr) and !empty($attr))
             $plantRepository->selectColumnsFromModel($attr);
-        
-        if (str_contains($attr, 'user_id'))
+
+        if (isset($attr) and str_contains($attr, 'user_id'))
             $plantRepository->selectColumnsFromRelationship('user', $user_attr);
 
-        if (str_contains($attr, 'plant_classification_id'))
+        if (isset($attr) and str_contains($attr, 'plant_classification_id'))
             $plantRepository->selectColumnsFromRelationship('plantClassification', $class_attr);
 
-        if (str_contains($attr, 'bonsai_style_id'))
+        if (isset($attr) and str_contains($attr, 'bonsai_style_id'))
             $plantRepository->selectColumnsFromRelationship('bonsaiStyle', $style_attr);
 
-        if ($int_attr)
+        if (isset($int_attr) and !empty($int_attr))
             $plantRepository->selectColumnsFromRelationship('interventions', $int_attr);
 
-        if ($pics_attr)
+        if (isset($pics_attr) and !empty($pics_attr))
             $plantRepository->selectColumnsFromRelationship('pictures', $pics_attr);
 
-        if ($vids_attr)
+        if (isset($vids_attr) and !empty($vids_attr))
             $plantRepository->selectColumnsFromRelationship('videos', $vids_attr);
 
         $plants = $plantRepository->getCollection();
