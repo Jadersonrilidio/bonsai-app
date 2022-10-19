@@ -38,13 +38,17 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 axios.interceptors.request.use(
     config => {
-        let token = document.cookie.split(';').find(index => {
-            return index.includes('token=');
-        });
 
-        token = 'Bearer ' + token.split('=')[1];
+        console.log('REQUEST INTERCEPTED: ', config.headers);
 
-        config.headers['Authorization'] = token;
+        if (document.cookie.includes('token=')) {
+            let token = document.cookie.split(';').find(index => {
+                return index.includes('token=');
+            });
+            token = 'bearer ' + token.split('=')[1];
+            config.headers['Authorization'] = token;
+        }
+
         config.headers['Accept'] = 'application/json';
 
         if (config.method == 'post') {
@@ -60,7 +64,7 @@ axios.interceptors.request.use(
     },
     error => {
 
-        console.log('REQUEST INTERCEPTED: ', error.response);
+        console.log('REQUEST INTERCEPTED ON ERROR: ', error.response);
         
         return Promise.reject(error);
     }
@@ -78,7 +82,7 @@ axios.interceptors.response.use(
     },
     error => {
 
-        console.log('RESPONSE INTERCEPTED: ', error.response);
+        console.log('RESPONSE INTERCEPTED ON ERROR: ', error.response);
         
         if (error.response.status == 401 && error.response.data.message == 'Token has expired') {
             axios.post('http://localhost:8000/api/auth/refresh')

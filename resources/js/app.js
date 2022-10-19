@@ -60,6 +60,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('card-component', require('./components/CardComponent.vue').default);
 Vue.component('input-container-component', require('./components/InputContainerComponent.vue').default);
 
+Vue.component('home-component', require('./components/Home.vue').default);
 Vue.component('login-component', require('./components/Login.vue').default);
 Vue.component('register-component', require('./components/Register.vue').default);
 
