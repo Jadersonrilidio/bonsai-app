@@ -9,6 +9,43 @@ require('./bootstrap');
 window.Vue = require('vue').default;
 
 /**
+ * Vuex import and configuration.
+ */
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+    state: {
+        baseUrl: 'http://localhost:8000',
+        item: {
+
+        },
+        plant: {
+            user_id: '',
+            bonsai_style_id: '',
+            plant_classification_id: '',
+            name: '',
+            specimen: '',
+            age: '',
+            description: '',
+            main_picture: '',
+            height: '',
+            interventions: [],
+            pictures: [],
+            videos: [],
+        },
+        transaction: {
+            status: '',
+            message: '',
+            alert: '',
+            target: '',
+            errors: []
+        },
+    }
+});
+
+/**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
@@ -20,6 +57,9 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('card-component', require('./components/CardComponent.vue').default);
+Vue.component('input-container-component', require('./components/InputContainerComponent.vue').default);
+
 Vue.component('login-component', require('./components/Login.vue').default);
 Vue.component('register-component', require('./components/Register.vue').default);
 
@@ -31,4 +71,5 @@ Vue.component('register-component', require('./components/Register.vue').default
 
 const app = new Vue({
     el: '#app',
+    store
 });

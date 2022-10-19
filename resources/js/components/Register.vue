@@ -3,10 +3,13 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Register</div>
+                    
+                    <div class="card-header">
+                        Register
+                    </div>
     
                     <div class="card-body">
-                        <form method="POST" action="" @submit.prevent="debugSubmittedData($event)">
+                        <form method="POST" action="" @submit.prevent="register($event)">
                             
                             <input type="hidden" name="_token" :value="csrf_token">
     
@@ -23,9 +26,6 @@
     
                                 <div class="col-md-6">
                                     <input id="email" type="email" class="form-control" name="email" value="" required autocomplete="email" v-model="email">
-                                    <!-- <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span> -->
                                 </div>
                             </div>
     
@@ -67,21 +67,51 @@
         ],
         data() {
             return {
-                name: '',
-                email: '',
-                password: '',
-                password_confirmation: '',
+                pathUri: '/api/auth/login',
+                formInputs: {
+                    name: {
+                        classes: '',
+                        value: ''
+                    },
+                    email: {
+                        classes: '',
+                        value: ''
+                    },
+                    password: {
+                        classes: '',
+                        value: ''
+                    },
+                    password_confirmation: {
+                        classes: '',
+                        value: ''
+                    }
+                }
             }
         },
         methods: {
-            debugSubmittedData(event) {
-                console.log(this.name);
-                console.log(this.email);
-                console.log(this.password);
-                console.log(this.password_confirmation);
-                console.log(event);
+            register(event) { 
+                let url = this.$store.state.baseUrl + this.pathUri;
 
-                event.target.submit();
+                let formData = new FormData();
+                formData.append('name', this.formInputs.name.value);
+                formData.append('email', this.formInputs.email.value);
+                formData.append('password', this.formInputs.password.value);
+                formData.append('password_confirmation', this.formInputs.password_confirmation.value);
+
+                axios.post(url, formData)
+                    .then(response => {
+                        document.cookie = 'token=' + response.data.access_token + ';SameSite=Lax';
+                        event.target.submit();
+                    })
+                    .catch(errors => {
+                        this.assertFormInputsAtLoginFail();
+                    });
+            },
+            assertFormInputsAtRegisterFail() {
+                this.formInputs.name.classes = 'is-invalid';
+                this.formInputs.email.classes = 'is-invalid';
+                this.formInputs.password.classes = 'is-invalid';
+                this.formInputs.password_confirmation.classes = 'is-invalid';
             }
         }
     }

@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         return ($token)
             ? $this->respondWithToken($token)
-            : $this->forbidden();
+            : $this->unauthorized();
     }
 
     /**

@@ -1,3 +1,5 @@
+const { default: axios } = require('axios');
+
 window._ = require('lodash');
 
 try {
@@ -30,3 +32,68 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/**
+ * Intercept all requests.
+ */
+axios.interceptors.request.use(
+    config => {
+        let token = document.cookie.split(';').find(index => {
+            return index.includes('token=');
+        });
+
+        token = 'Bearer ' + token.split('=')[1];
+
+        config.headers['Authorization'] = token;
+        config.headers['Accept'] = 'application/json';
+
+        if (config.method == 'post') {
+            config.headers['Content-Type'] = 'multipart/form-data';
+            
+            console.log("WE'RE HERE!");
+
+        }
+
+        console.log('REQUEST INTERCEPTED: ', config.headers);
+
+        return config;
+    },
+    error => {
+
+        console.log('REQUEST INTERCEPTED: ', error.response);
+        
+        return Promise.reject(error);
+    }
+);
+
+/**
+ * Intercept all responses.
+ */
+axios.interceptors.response.use(
+    response => {
+        
+        console.log('RESPONSE INTERCEPTED: ', response);
+        
+        return response;
+    },
+    error => {
+
+        console.log('RESPONSE INTERCEPTED: ', error.response);
+        
+        if (error.response.status == 401 && error.response.data.message == 'Token has expired') {
+            axios.post('http://localhost:8000/api/auth/refresh')
+                .then(response => {
+                    document.cookie = 'token=' + response.data.access_token + ';SameSite=Lax';
+                    
+                    console.log('RESPONSE INTERCEPTED: ', 'TOKEN RESTORED => ', document.cookie);
+
+                    window.location.reload();
+                })
+                .catch(errors => {
+                    console.log(errors.response);
+                });
+        }
+
+        return Promise.reject(error);
+    }
+);
