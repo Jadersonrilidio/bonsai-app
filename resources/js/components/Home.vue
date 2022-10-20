@@ -3,24 +3,22 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
 
-                <div class="card">
-                    <div class="card-header">
-                        {{ card.header.text }}
-                    </div>
+                <div class="card text-center">
     
                     <div class="card-body">
-                        <p> {{ card.body.text }} </p>
-                        <hr>
                         
-                        <p> You have a total of: </p>
-                        <br>
-                        <p> Items: {{ plantsCounter.all }} </p>
-                        <br>
-                        <p> Bonsai: {{ plantsCounter.bonsai }} </p>
-                        <br>
-                        <p> Pre-bonsai: {{ plantsCounter.preBonsai }} </p>
-                        <br>
-                        <p> Seedlings: {{ plantsCounter.seedlings }} </p>
+                        <h5 class="card-title">
+                            {{ card.title }}
+                        </h5>
+                        
+                        <h6 class="card-subtitle">
+                            {{ card.subtitle }}
+                        </h6>
+
+                        <p class="card-text">Plants: {{ plantsCounter.all }}</p>
+                        <p class="card-text">Bonsai: {{ plantsCounter.bonsai }}</p>
+                        <p class="card-text">Pre-bonsai: {{ plantsCounter.preBonsai }}</p>
+                        <p class="card-text">Seedlings: {{ plantsCounter.seedlings }}</p>
 
                     </div>
                 </div>
@@ -33,17 +31,14 @@
 <script>
     export default {
         props: [
-            'user'
+            'userid',
+            'username'
         ],
         data() {
             return {
                 card: {
-                    header: {
-                        text: 'Welcome back, ' + this.user.name + '!'
-                    },
-                    body: {
-                        text: 'you are logged in'
-                    }
+                    title: 'Welcome back, ' + this.username + '!',
+                    subtitle: 'You have a total of: ',
                 },
                 plants: [],
                 plantsCounter: {
@@ -51,7 +46,8 @@
                     bonsai: 0,
                     preBonsai: 0,
                     seedlings: 0
-                }
+                },
+                link: this.$store.state.baseUrl + '/plant',
             }
         },
         methods: {
@@ -86,7 +82,6 @@
                 });
             }
         },
-
         mounted() {
             this.loadUserPlants();
         }

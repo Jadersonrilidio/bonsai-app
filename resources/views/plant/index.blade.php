@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    
-    <div class="container">
-        Plant INDEX here!
-    </div>
+
+    <plant-component></plant-component>
 
 @endsection

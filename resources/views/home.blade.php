@@ -2,6 +2,10 @@
 
 @section('content')
 
-    <home-component user="{{ auth()->user() }}"></home-component>
+    <home-component 
+        userid="{{ auth()->user()->id }}"
+        username="{{ auth()->user()->name }}"
+    >
+    </home-component>
 
 @endsection

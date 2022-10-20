@@ -18,6 +18,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         baseUrl: 'http://localhost:8000',
+        plantClassificationId: null,
         item: {
 
         },
@@ -60,9 +61,10 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('card-component', require('./components/CardComponent.vue').default);
 Vue.component('input-container-component', require('./components/InputContainerComponent.vue').default);
 
-Vue.component('home-component', require('./components/Home.vue').default);
-Vue.component('login-component', require('./components/Login.vue').default);
 Vue.component('register-component', require('./components/Register.vue').default);
+Vue.component('login-component', require('./components/Login.vue').default);
+Vue.component('home-component', require('./components/Home.vue').default);
+Vue.component('plant-component', require('./components/Plant.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

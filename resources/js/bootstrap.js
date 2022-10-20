@@ -38,9 +38,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 axios.interceptors.request.use(
     config => {
-
-        console.log('REQUEST INTERCEPTED: ', config.headers);
-
         if (document.cookie.includes('token=')) {
             let token = document.cookie.split(';').find(index => {
                 return index.includes('token=');
@@ -53,19 +50,11 @@ axios.interceptors.request.use(
 
         if (config.method == 'post') {
             config.headers['Content-Type'] = 'multipart/form-data';
-            
-            console.log("WE'RE HERE!");
-
         }
-
-        console.log('REQUEST INTERCEPTED: ', config.headers);
 
         return config;
     },
     error => {
-
-        console.log('REQUEST INTERCEPTED ON ERROR: ', error.response);
-        
         return Promise.reject(error);
     }
 );
@@ -75,22 +64,13 @@ axios.interceptors.request.use(
  */
 axios.interceptors.response.use(
     response => {
-        
-        console.log('RESPONSE INTERCEPTED: ', response);
-        
         return response;
     },
     error => {
-
-        console.log('RESPONSE INTERCEPTED ON ERROR: ', error.response);
-        
         if (error.response.status == 401 && error.response.data.message == 'Token has expired') {
             axios.post('http://localhost:8000/api/auth/refresh')
                 .then(response => {
                     document.cookie = 'token=' + response.data.access_token + ';SameSite=Lax';
-                    
-                    console.log('RESPONSE INTERCEPTED: ', 'TOKEN RESTORED => ', document.cookie);
-
                     window.location.reload();
                 })
                 .catch(errors => {
