@@ -14,20 +14,55 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
-Route::get('/plant', [App\Http\Controllers\PlantPageController::class, 'index'])->name('plant.index');
-Route::get('/plant/create', [App\Http\Controllers\PlantPageController::class, 'create'])->name('plant.create');
-Route::get('/plant/edit/{plant_id}', [App\Http\Controllers\PlantPageController::class, 'edit'])->name('plant.edit');
-Route::get('/plant/{plant_id}', [App\Http\Controllers\PlantPageController::class, 'show'])->name('plant.show');
+/*
+| Website routes v1 - No controllers needed.
+|
+| @route  /home
+| @route  /plant
+| @route  /plant/create
+| @route  /plant/edit/{id}
+| @route  /plant/{id}
+| @route  /profile
+| @route  /profile/edit
+| @route  /settings
+*/
+Route::middleware('auth')->group(function ($router) {
 
-Route::get('/settings', [App\Http\Controllers\UserController::class, 'settings'])->name('user.settings');
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
 
-Route::get('/profile', [App\Http\Controllers\UserController::class, 'profile'])->name('user.profile');
-Route::get('/profile/edit', [App\Http\Controllers\UserController::class, 'editProfile'])->name('user.profile.edit');
+    Route::get('/plant', function () {
+        return view('plant.index');
+    })->name('plant.index');
+
+    Route::get('/plant/create', function () {
+        return view('plant.create');
+    })->name('plant.create');
+
+    Route::get('/plant/{id}', function ($id) {
+        return view('plant.show', ['plant_id' => $id]);
+    })->name('plant.show');
+
+    Route::get('/plant/edit/{id}', function ($id) {
+        return view('plant.edit', ['plant_id' => $id]);
+    })->name('plant.edit');
+
+    Route::get('/profile', function () {
+        return view('user.profile');
+    })->name('user.profile');
+
+    Route::get('/profile/edit', function () {
+        return view('user.profile-edit');
+    })->name('user.profile.edit');
+
+    Route::get('/settings', function () {
+        return view('user.settings');
+    })->name('user.settings');
+});

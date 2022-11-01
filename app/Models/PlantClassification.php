@@ -52,6 +52,6 @@ class PlantClassification extends Model
      */
     public function plants()
     {
-        return $this->belongsToMany('App\Models\Plant', 'plants', 'plant_classification_id', 'id');
+        return $this->hasMany('App\Models\Plant', 'plant_classification_id', 'id');
     }
 }

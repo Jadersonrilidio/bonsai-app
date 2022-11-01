@@ -54,7 +54,7 @@ class Intervention extends Model
      */
     public function plant()
     {
-        return $this->hasOne('App\Models\Plant', 'id', 'plant_id');
+        return $this->belongsTo('App\Models\Plant', 'plant_id', 'id');
     }
 
     /**
@@ -62,7 +62,7 @@ class Intervention extends Model
      */
     public function interventionClassification()
     {
-        return $this->hasOne('App\Models\InterventionClassification', 'id', 'intervention_classification_id');
+        return $this->belongsTo('App\Models\InterventionClassification', 'intervention_classification_id', 'id');
     }
 
     /**
@@ -70,6 +70,6 @@ class Intervention extends Model
      */
     public function observations()
     {
-        return $this->belongsTo('App\Models\Observation', 'intervention_id', 'id');
+        return $this->hasMany('App\Models\Observation', 'intervention_id', 'id');
     }
 }

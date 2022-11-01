@@ -58,8 +58,9 @@ class PlantClassificationController extends Controller
      */
     public function index(Request $request)
     {
-        $attr = $request->get('attr') ?? '';
         $filter = $request->get('filter') ?? '';
+        $attr = $request->get('attr') ?? '';
+        $plant_attr = $request->get('plant_attr') ?? '';
 
         $plantClassificationRepository = new PlantClassificationRepository($this->plantClassification);
 
@@ -68,6 +69,11 @@ class PlantClassificationController extends Controller
 
         if ($attr)
             $plantClassificationRepository->selectColumnsFromModel($attr);
+
+        if ($plant_attr) {
+            $plant_attr .= ',plant_classification_id';
+            $plantClassificationRepository->selectColumnsFromRelationship('plants', $plant_attr);
+        }
 
         $plantClassifications = $plantClassificationRepository->getCollection();
 

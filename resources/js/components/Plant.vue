@@ -5,27 +5,38 @@
 
                 <div class="card">
     
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs">
-                            <li class="nav-item">
-                              <a class="nav-link" :class="navlinkIsActive(null)" @click.prevent="filterByPlantClassification(null)">All</a>
-                            </li>
-                            <li class="nav-item">
-                              <a class="nav-link" :class="navlinkIsActive(1)" @click.prevent="filterByPlantClassification(1)">Bonsai</a>
-                            </li>
-                            <li class="nav-item">
-                              <a class="nav-link" :class="navlinkIsActive(2)" @click.prevent="filterByPlantClassification(2)">Pre-bonsai</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" :class="navlinkIsActive(3)" @click.prevent="filterByPlantClassification(3)">Seedlings</a>
-                              </li>
-                          </ul>
+                    <div class="card-header nav">
+                            <div class="col-md-6">
+                                <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" :class="navlinkIsActive(null)" @click.prevent="filterByPlantClassification(null)">All</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" :class="navlinkIsActive(1)" @click.prevent="filterByPlantClassification(1)">Bonsai</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" :class="navlinkIsActive(2)" @click.prevent="filterByPlantClassification(2)">Pre-bonsai</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" :class="navlinkIsActive(3)" @click.prevent="filterByPlantClassification(3)">Seedlings</a>
+                                </li>
+                            </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <li class="nav-item">
+                                    <a class="btn btn-sm btn-primary" style="float:right" href="#">Create bonsai</a>
+                                </li>
+                            </div>
                     </div>
 
-                    <div class="card-body"></div>
+                    <div class="card-body">
+                        <plant-card-component></plant-card-component>
+                        <plant-card-component></plant-card-component>
+                        <plant-card-component></plant-card-component>
+                    </div>
 
-                    <div class="card-footer text-right">
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addPlantModal">Add Plant</button>
+                    <div class="card-footer">
+                        <a class="btn btn-sm btn-primary" style="float:right" href="#">Create bonsai</a>
                     </div>
 
                 </div>

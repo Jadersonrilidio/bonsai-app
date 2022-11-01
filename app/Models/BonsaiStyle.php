@@ -51,6 +51,6 @@ class BonsaiStyle extends Model
      */
     public function plants()
     {
-        return $this->belongsToMany('App\Models\Plant', 'plants', 'bonsai_style_id', 'id');
+        return $this->hasMany('App\Models\Plant', 'bonsai_style_id', 'id');
     }
 }

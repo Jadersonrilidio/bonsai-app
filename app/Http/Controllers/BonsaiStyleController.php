@@ -11,10 +11,11 @@ use App\Repositories\BonsaiStyleRepository;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
 
 class BonsaiStyleController extends Controller
 {
-    use ErrorResponses, StandardStorage, RewriteModelRules;
+    use ErrorResponses, StandardStorage, RewriteModelRules, SetRequestInputs;
 
     /**
      * BonsaiStyle model instance.
@@ -50,20 +51,34 @@ class BonsaiStyleController extends Controller
      */
     public function index(Request $request)
     {
-        $filter =  $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
+        $filter = $this->setFilters($request->get('filter'));
+        $attr = $this->setAttr($request->get('attr'));
+        $plant_attr = $this->setRelAttr('plants', 'bonsai_style_id', $request);
 
         $bonsaiStyleRepository = new BonsaiStyleRepository($this->bonsaiStyle);
 
         if ($filter)
-            $bonsaiStyleRepository->filterRegistersFromModel($filter);
+            $bonsaiStyleRepository->NEWfilterRegistersFromModel($filter);
 
         if ($attr)
-            $bonsaiStyleRepository->selectColumnsFromModel($attr);
+            $bonsaiStyleRepository->NEWselectColumnsFromModel($attr);
+
+        if ($plant_attr)
+            $bonsaiStyleRepository->NEWselectColumnsFromRelationship($plant_attr);
 
         $bonsaiStyles = $bonsaiStyleRepository->getCollection();
 
         return response()->json($bonsaiStyles, 200, $this->headerOptions);
+    }
+
+    /**
+     * //TODO set it in the right trait
+     */
+    private function setPlantAttr($request)
+    {
+        return $request->get('plant_attr')
+            ? 'plants:bonsai_style_id,' . $request->get('plant_attr')
+            : '';
     }
 
     /**

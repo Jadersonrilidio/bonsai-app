@@ -1,20 +1,42 @@
 <template>
-    <div class="card text-left" style="margin: 10px 20px; border:1px solid">
-
-        <div class="card-body" style="display:inline; background-color:lightgray">
-            <div class="col-md-3" style="float:left; height:160px; width:160px">
-                <img class="img-fluid" src="/storage/images/oKGHIjJ8t4UsR8EFUtuDfQGIhpFxFahFH32E8caS.jpg" alt="main_picture">
+    <div class="card mt-4 card-plant" @click="showPlant($event)">
+        <div class="row">
+            <div class="col-md-4">
+                <img class="img-fluid rounded img" src="/storage/images/oKGHIjJ8t4UsR8EFUtuDfQGIhpFxFahFH32E8caS.jpg">
             </div>
 
-            <div class="col-md-9" style="float:right;">
-                <div class="col-md-12" style="line-height: 20px; float:right"><h5>Junípero <i style="color:gray">(Juniperus Procumbens)</i></h5></div>
-                <div class="col-md-12" style="line-height: 20px; float:right"><b>Type:</b> &emsp; Bonsai</div>
-                <div class="col-md-12" style="line-height: 20px; float:right"><b>Style:</b> &emsp; tree-over-rock</div>
+            <div class="col-md-8">
 
-                <div class="col-md-12" style="line-height: 20px; float:right"><b>Age:</b> &emsp; 23 years</div>
-                <div class="col-md-12" style="line-height: 20px; float:right"><b>Height:</b> &emsp; 50 centimeters</div>
-                
-                <div class="col-md-12" style="line-height: 20px; float:right"><b>Description:</b> This is a beautiful Juniperus over rock... </div>
+                <div class="plant-name">
+                    Junípero
+                    <span class="scientific-name">(Juniperus Procumbens)</span>
+                </div>
+
+                <table class="table table-sm table-borderless table-cels">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Type</th>
+                            <td>Bonsai</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Style</th>
+                            <td>tree-over-rock</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Age</th>
+                            <td>23 years</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Height</th>
+                            <td>50 centimeters</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Description</th>
+                            <td>Juniperus over rock is so cool...</td>
+                        </tr>
+                    </tbody>
+                </table>
+
             </div>
 
         </div>
@@ -24,12 +46,57 @@
 <script>
     export default {
         props: [
-            'imageUrl'
+            
         ],
         data() {
             return {
               
             }
+        },
+        methods: {
+            showPlant(event) {
+                alert('you clicked in a bonsai :)');
+            }
         }
     }
 </script>
+
+<style>
+    .card-plant {
+        height: 150px;
+        max-width: 74%;
+        align-content: center;
+        margin: 10px auto;
+        cursor: pointer; 
+    }
+
+    .card-plant:hover{
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+    }
+
+    .img {
+        max-height: 150px;
+    }
+
+    .table-cels td, .table-cels th {
+        font-size: 0.9em;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .plant-name {
+        margin-top: 5px;
+        margin-bottom: 0px;
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+    .scientific-name {
+        font-style: italic;
+        font-weight: lighter;
+        color: gray;
+    }
+</style>

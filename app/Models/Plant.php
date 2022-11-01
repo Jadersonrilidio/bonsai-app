@@ -64,7 +64,7 @@ class Plant extends Model
      */
     public function user()
     {
-        return $this->hasOne('App\Models\User', 'id', 'user_id');
+        return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 
     /**
@@ -72,15 +72,15 @@ class Plant extends Model
      */
     public function plantClassification()
     {
-        return $this->hasOne('App\Models\PlantClassification', 'id', 'plant_classification_id');
+        return $this->belongsTo('App\Models\PlantClassification', 'plant_classification_id', 'id');
     }
 
     /**
      * 
      */
-    public function bonsaiStyle()
+    public function bonsaiStyles()
     {
-        return $this->hasOne('App\Models\BonsaiStyle', 'id', 'bonsai_style_id');
+        return $this->belongsTo('App\Models\BonsaiStyle', 'bonsai_style_id', 'id');
     }
 
     /**
@@ -88,7 +88,7 @@ class Plant extends Model
      */
     public function interventions()
     {
-        return $this->belongsTo('App\Models\Intervention', 'plant_id', 'id');
+        return $this->hasMany('App\Models\Intervention', 'plant_id', 'id');
     }
 
     /**
@@ -96,7 +96,7 @@ class Plant extends Model
      */
     public function pictures()
     {
-        return $this->belongsTo('App\Models\Picture', 'plant_id', 'id');
+        return $this->hasMany('App\Models\Picture', 'plant_id', 'id');
     }
 
     /**
@@ -104,6 +104,6 @@ class Plant extends Model
      */
     public function videos()
     {
-        return $this->belongsTo('App\Models\Video', 'plant_id', 'id');
+        return $this->hasMany('App\Models\Video', 'plant_id', 'id');
     }
 }

@@ -60,6 +60,7 @@ const store = new Vuex.Store({
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('card-component', require('./components/CardComponent.vue').default);
 Vue.component('input-container-component', require('./components/InputContainerComponent.vue').default);
+Vue.component('plant-card-component', require('./components/PlantCardComponent.vue').default);
 
 Vue.component('register-component', require('./components/Register.vue').default);
 Vue.component('login-component', require('./components/Login.vue').default);

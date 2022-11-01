@@ -51,6 +51,6 @@ class InterventionClassification extends Model
      */
     public function interventions()
     {
-        return $this->belongsToMany('App\Models\Intervention', 'interventions', 'intervention_classification_id', 'id');
+        return $this->hasMany('App\Models\Intervention', 'intervention_classification_id', 'id');
     }
 }

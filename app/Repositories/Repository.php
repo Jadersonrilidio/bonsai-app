@@ -72,6 +72,40 @@ abstract class Repository
     }
 
     /**
+     * Filter all registers in the model.
+     * 
+     * @param  array  $filters
+     * @return void
+     */
+    public function NEWfilterRegistersFromModel(array $filters) //FIX
+    {
+        foreach ($filters as $filter)
+            $this->model = $this->model->where($filter[0], $filter[1], $filter[2]);
+    }
+
+    /**
+     * Set the columns to retrieve from the model.
+     * 
+     * @param  array  $attr
+     * @return void
+     */
+    public function NEWselectColumnsFromModel(array $attr) //FIX
+    {
+        $this->model = $this->model->select($attr);
+    }
+
+    /**
+     * Set the coulmns to retrieve from the respective relation.
+     * 
+     * @param  string  $attr
+     * @return void
+     */
+    public function NEWselectColumnsFromRelationship(string $query) //FIX
+    {
+        $this->model = $this->model->with($query);
+    }
+
+    /**
      * Return the model's objects collection matcht.
      * 
      * @return Illuminate\Database\Schema\Collection

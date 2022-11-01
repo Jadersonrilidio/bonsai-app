@@ -48,8 +48,9 @@ class InterventionClassificationController extends Controller
      */
     public function index(Request $request)
     {
-        $attr = $request->get('attr') ?? '';
         $filter = $request->get('filter') ?? '';
+        $attr = $request->get('attr') ?? '';
+        $int_attr = $request->get('int_attr') ?? '';
 
         $interventionClassificationRepository = new InterventionClassificationRepository($this->interventionClassification);
 
@@ -58,6 +59,9 @@ class InterventionClassificationController extends Controller
 
         if ($attr)
             $interventionClassificationRepository->selectColumnsFromModel($attr);
+
+        if ($int_attr)
+            $interventionClassificationRepository->selectColumnsFromRelationship('interventions', $int_attr);
 
         $interventionClassifications = $interventionClassificationRepository->getCollection();
 

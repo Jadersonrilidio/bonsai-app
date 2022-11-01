@@ -50,6 +50,6 @@ class Observation extends Model
      */
     public function intervention()
     {
-        return $this->hasOne('App\Models\Intervention', 'id', 'intervention_id');
+        return $this->belongsTo('App\Models\Intervention', 'intervention_id', 'id');
     }
 }

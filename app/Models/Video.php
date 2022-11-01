@@ -50,6 +50,6 @@ class Video extends Model
      */
     public function plant()
     {
-        return $this->hasOne('App\Models\Plant', 'id', 'plant_id');
+        return $this->belongsTo('App\Models\Plant', 'plan_id', 'id');
     }
 }
