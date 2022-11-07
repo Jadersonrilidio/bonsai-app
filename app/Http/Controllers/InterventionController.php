@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
 use App\Models\Intervention;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Repositories\InterventionRepository;
 
 class InterventionController extends Controller
 {
-    use ErrorResponses, RewriteModelRules;
+    use ErrorResponses,
+        RewriteModelRules,
+        SetRequestInputs;
 
     /**
      * Intervention model instance.
@@ -49,27 +51,17 @@ class InterventionController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $plant_attr = $request->get('plant_attr') ?? '';
-        $class_attr = $request->get('class_attr') ?? '';
-        $obs_attr = $request->get('obs_attr') ?? '';
+        $plant_id = 1; //TODO
+        $inputs = $this->setRequestInputs($request, $plant_id);
 
         $interventionRepository = new InterventionRepository($this->intervention);
 
-        if ($filter)
-            $interventionRepository->filterRegistersFromModel($filter);
-
-        if ($attr)
-            $interventionRepository->selectColumnsFromModel($attr);
-        
-        if (str_contains($attr, 'plant_id'))
-            $interventionRepository->selectColumnsFromRelationship('plant', $plant_attr);
-
-        if (str_contains($attr, 'intervention_classification_id'))
-            $interventionRepository->selectColumnsFromRelationship('interventionClassification', $class_attr);
-
-        $interventionRepository->selectColumnsFromRelationship('observations', $obs_attr);
+        $interventionRepository
+            ->filterRegistersFromModel($inputs['filter'])
+            ->selectColumnsFromModel($inputs['attr'])
+            ->selectColumnsFromRelationship($inputs['plant_attr'])
+            ->selectColumnsFromRelationship($inputs['class_attr'])
+            ->selectColumnsFromRelationship($inputs['obs_attr']);
 
         $interventions = $interventionRepository->getCollection();
 
@@ -148,5 +140,25 @@ class InterventionController extends Controller
         $intervention->delete();
 
         return response()->json($deletedIntervention, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all necessary request inputs in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestInputs(Request $request, $plant_id)
+    {
+        $inputs = [];
+        $inputs['filter'] = $this->setFilters('filter', $request);
+        array_unshift($inputs['filter'], ['plant_id', '=', $plant_id]); //TODO
+
+        $inputs['attr'] = $this->setAttr('attr', $request);
+        $inputs['plant_attr'] = $this->setRelAttr('plant', 'plant_id', 'plant_attr', $request);
+        $inputs['class_attr'] = $this->setRelAttr('interventionClassification', 'intervention_classification_id', 'class_attr', $request);
+        $inputs['obs_attr'] = $this->setRelAttr('observations', 'id', 'obs_attr', $request);
+
+        return $inputs;
     }
 }

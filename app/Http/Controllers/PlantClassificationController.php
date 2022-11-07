@@ -10,6 +10,7 @@ use \Illuminate\Http\Request;
 use App\Repositories\PlantClassificationRepository;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
 
 /**
  * Controller class for api routes of model PlantClassification
@@ -22,7 +23,9 @@ use App\Http\Controllers\Traits\RewriteModelRules;
  */
 class PlantClassificationController extends Controller
 {
-    use ErrorResponses, RewriteModelRules;
+    use ErrorResponses,
+        RewriteModelRules,
+        SetRequestInputs;
 
     /**
      * PlantClassification model instance.
@@ -54,26 +57,20 @@ class PlantClassificationController extends Controller
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $plant_attr = $request->get('plant_attr') ?? '';
+        $filter = $this->setFilters('filter', $request);
+        $attr = $this->setAttr('attr', $request);
+        $plant_attr = $this->setRelAttr('plants', 'plant_classification_id', 'plant_attr', $request);
 
         $plantClassificationRepository = new PlantClassificationRepository($this->plantClassification);
 
-        if ($filter)
-            $plantClassificationRepository->filterRegistersFromModel($filter);
-
-        if ($attr)
-            $plantClassificationRepository->selectColumnsFromModel($attr);
-
-        if ($plant_attr) {
-            $plant_attr .= ',plant_classification_id';
-            $plantClassificationRepository->selectColumnsFromRelationship('plants', $plant_attr);
-        }
+        $plantClassificationRepository
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($plant_attr);
 
         $plantClassifications = $plantClassificationRepository->getCollection();
 
@@ -84,7 +81,7 @@ class PlantClassificationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePlantClassificationRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StorePlantClassificationRequest $request)
     {
@@ -99,7 +96,7 @@ class PlantClassificationController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -116,7 +113,7 @@ class PlantClassificationController extends Controller
      *
      * @param  \App\Http\Requests\UpdatePlantClassificationRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdatePlantClassificationRequest $request, $id)
     {
@@ -139,7 +136,7 @@ class PlantClassificationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {

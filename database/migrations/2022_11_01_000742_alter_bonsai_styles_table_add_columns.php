@@ -14,7 +14,7 @@ class AlterBonsaiStylesTableAddColumns extends Migration
     public function up()
     {
         Schema::table('bonsai_styles', function (Blueprint $table) {
-            $table->text('description');
+            $table->text('description')->nulable()->default(null);
         });
     }
 

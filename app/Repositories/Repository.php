@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
+use \Illuminate\Database\Eloquent\Model;
+use \Illuminate\Database\Eloquent\Builder;
 
 abstract class Repository
 {
@@ -17,7 +17,7 @@ abstract class Repository
     /**
      * Repository class constructor method.
      * 
-     * @param  Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
     public function __construct($model)
@@ -28,87 +28,56 @@ abstract class Repository
     /**
      * Filter all registers in the model.
      * 
-     * @param  string  $filters
-     * @return void
-     */
-    public function filterRegistersFromModel(string $filters)
-    {
-        $filters = explode(';', $filters);
-
-        foreach ($filters as $filter) {
-            $filter = explode(':', $filter);
-            $this->model = $this->model->where($filter[0], $filter[1], $filter[2]);
-        }
-    }
-
-    /**
-     * Set the columns to retrieve from the model.
-     * 
-     * @param  string  $attr
-     * @return void
-     */
-    public function selectColumnsFromModel(string $attr)
-    {
-        $attr = explode(',', $attr);
-        array_push($attr, 'id');
-
-        $this->model = $this->model->select($attr);
-    }
-
-    /**
-     * Set the coulmns to retrieve from the respective relation.
-     * 
-     * @param  string  $relationship
-     * @param  string  $attr
-     * @return void
-     */
-    public function selectColumnsFromRelationship(string $relationship, string $attr = '')
-    {
-        $query = ($attr and $attr != '')
-            ? $relationship . ':id,' . $attr
-            : $relationship;
-
-        $this->model = $this->model->with($query);
-    }
-
-    /**
-     * Filter all registers in the model.
-     * 
      * @param  array  $filters
-     * @return void
+     * @return \App\Repositories\Repository
      */
-    public function NEWfilterRegistersFromModel(array $filters) //FIX
+    public function filterRegistersFromModel(array $filters)
     {
+        if (!$this->validateArray($filters))
+            return $this;
+
         foreach ($filters as $filter)
             $this->model = $this->model->where($filter[0], $filter[1], $filter[2]);
+
+        return $this;
     }
 
     /**
      * Set the columns to retrieve from the model.
      * 
      * @param  array  $attr
-     * @return void
+     * @return \App\Repositories\Repository
      */
-    public function NEWselectColumnsFromModel(array $attr) //FIX
+    public function selectColumnsFromModel(array $attr)
     {
+        if (!$this->validateArray($attr))
+            return $this;
+
         $this->model = $this->model->select($attr);
+
+        return $this;
     }
 
     /**
      * Set the coulmns to retrieve from the respective relation.
      * 
-     * @param  string  $attr
-     * @return void
+     * @param  string  $query
+     * @return \App\Repositories\Repository
      */
-    public function NEWselectColumnsFromRelationship(string $query) //FIX
+    public function selectColumnsFromRelationship(string $query)
     {
+        if (!$this->validateString($query))
+            return $this;
+
         $this->model = $this->model->with($query);
+
+        return $this;
     }
 
     /**
      * Return the model's objects collection matcht.
      * 
-     * @return Illuminate\Database\Schema\Collection
+     * @return \Illuminate\Database\Schema\Collection
      */
     public function getCollection()
     {
@@ -119,10 +88,38 @@ abstract class Repository
      * Return the model's object collection matcht as a paginated object.
      * 
      * @param  int  $registersPerPage
-     * @return Illuminate\Database\Schema\Collection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getPaginatedCollection(int $registersPerPage = 10)
     {
         return $this->model->paginate($registersPerPage);
+    }
+
+    //TODO Helper methods                                                   
+
+    /**
+     * Assure whether is a valid array argument or not.
+     * 
+     * @param  array  $arg
+     * @return bool
+     */
+    private function validateArray($arg)
+    {
+        return (empty($arg) or !is_array($arg))
+            ? false
+            : true;
+    }
+
+    /**
+     * Assure whether is a valid string argument or not.
+     * 
+     * @param  string  $arg
+     * @return bool
+     */
+    private function validateString($arg)
+    {
+        return (empty($arg) or !is_string($arg))
+            ? false
+            : true;
     }
 }

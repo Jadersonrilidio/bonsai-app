@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Traits;
 
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
+use \Illuminate\Http\Request;
 
 trait SetRequestInputs
 {
     /**
      * Set the filters request input to query if exists.
      * 
-     * @param  string  $filters
+     * @param  string  $input
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    private function setFilters($filters)
+    function setFilters(string $input, Request $request)
     {
-        if (!$filters)
-            return '';
+        if (!$this->validateInput($request, $input))
+            return [];
 
-        $filters = explode(';', $filters);
-        array_map(fn ($filter) => explode(':', $filter), $filters); //REVIEW
+        $filters = explode(';', $request->get($input));
+        
+        $filters = array_map(fn ($filter) => explode(':', $filter), $filters);
 
         return $filters;
     }
@@ -27,15 +28,16 @@ trait SetRequestInputs
     /**
      * Edit and return the model attributes from the request input if exists.
      * 
-     * @param  string  $attr
+     * @param  string  $input
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    private function setAttr($attr)
+    function setAttr(string $input, Request $request)
     {
-        if (!$attr)
-            return '';
+        if (!$this->validateInput($request, $input))
+            return [];
 
-        $attr = explode(',', $attr);
+        $attr = explode(',', $request->get($input));
         array_push($attr, 'id');
 
         return $attr;
@@ -45,14 +47,37 @@ trait SetRequestInputs
      * Edit and return a relationship attributes from the request input if exists.
      * 
      * @param  string  $relationship
-     * @param  string  $relationship
-     * @param  string  $rel_attr
+     * @param  string  $foreign
+     * @param  string  $input
+     * @param  \Illuminate\Http\Request  $request
      * @return string
      */
-    private function setRelAttr($relationship, $foreign, $rel_attr)
+    function setRelAttr(string $relationship, string $foreign, string $input, Request $request)
     {
-        return ($rel_attr)
-            ? $relationship . ':' . $foreign . ',' . $rel_attr
-            : '';
+        if (!$this->validateInput($request, $input))
+            return $relationship;
+
+        $query = $relationship . ':';
+
+        if ($foreign)
+            $query .= $foreign . ',';
+
+        $query .= $request->get($input);
+
+        return $query;
+    }
+
+    /**
+     * Assert request input value is valid.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $input
+     * @return bool
+     */
+    private function validateInput($request, $input)
+    {
+        return ($request->has($input) and $request->get($input) != '')
+            ? true
+            : false;
     }
 }

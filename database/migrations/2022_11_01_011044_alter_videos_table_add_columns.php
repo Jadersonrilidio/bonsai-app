@@ -14,8 +14,8 @@ class AlterVideosTableAddColumns extends Migration
     public function up()
     {
         Schema::table('videos', function (Blueprint $table) {
-            $table->string('title', 64);
-            $table->text('description');
+            $table->string('title', 64)->nulable()->default(null);
+            $table->text('description')->nulable()->default(null);
         });
     }
 

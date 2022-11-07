@@ -1,0 +1,4 @@
+
+definir a arquitetura da minha aplicacao em diagramas/texto descritivo
+montar diagrama de blocos
+montar fluxograma

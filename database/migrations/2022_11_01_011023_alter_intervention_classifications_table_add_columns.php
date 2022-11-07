@@ -14,7 +14,7 @@ class AlterInterventionClassificationsTableAddColumns extends Migration
     public function up()
     {
         Schema::table('intervention_classifications', function (Blueprint $table) {
-            $table->text('description');
+            $table->text('description')->nulable()->default(null);
         });
     }
 

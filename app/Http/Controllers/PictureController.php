@@ -9,13 +9,17 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\RewriteModelRules;
 use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Repositories\PictureRepository;
 use Illuminate\Support\Facades\Storage;
 
 
 class PictureController extends Controller
 {
-    use ErrorResponses, RewriteModelRules, StandardStorage;
+    use ErrorResponses,
+        RewriteModelRules,
+        StandardStorage,
+        SetRequestInputs;
 
     /**
      * Picture model instance.
@@ -58,24 +62,20 @@ class PictureController extends Controller
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $plant_attr = $request->get('plant_attr') ?? '';
+        $filter = $this->setFilters('filter', $request);
+        $attr = $this->setAttr('attr', $request);
+        $plant_attr = $this->setRelAttr('plant', 'id', 'plant_attr', $request);
 
         $pictureRepository = new PictureRepository($this->picture);
 
-        if ($filter)
-            $pictureRepository->filterRegistersFromModel($filter);
-
-        if ($attr)
-            $pictureRepository->selectColumnsFromModel($attr);
-
-        if (str_contains($attr, 'plant_id'))
-            $pictureRepository->selectColumnsFromRelationship('plant', $plant_attr);
+        $pictureRepository
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($plant_attr);
 
         $pictures = $pictureRepository->getCollection();
 
@@ -86,7 +86,7 @@ class PictureController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePictureRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StorePictureRequest $request)
     {
@@ -108,7 +108,7 @@ class PictureController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -125,7 +125,7 @@ class PictureController extends Controller
      *
      * @param  \App\Http\Requests\UpdatePictureRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdatePictureRequest $request, $id)
     {
@@ -157,7 +157,7 @@ class PictureController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {

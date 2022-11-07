@@ -9,12 +9,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\RewriteModelRules;
 use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Repositories\VideoRepository;
 use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
-    use ErrorResponses, RewriteModelRules, StandardStorage;
+    use ErrorResponses,
+        RewriteModelRules,
+        StandardStorage,
+        SetRequestInputs;
 
     /**
      * Video model instance.
@@ -57,24 +61,20 @@ class VideoController extends Controller
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $plant_attr = $request->get('plant_attr') ?? '';
+        $filter = $this->setFilters('filter', $request);
+        $attr = $this->setAttr('attr', $request);
+        $plant_attr = $this->setRelAttr('plant', 'id', 'plant_attr', $request);
 
         $videoRepository = new VideoRepository($this->video);
 
-        if ($filter)
-            $videoRepository->filterRegistersFromModel($filter);
-
-        if ($attr)
-            $videoRepository->selectColumnsFromModel($attr);
-
-        if (str_contains($attr, 'plant_id'))
-            $videoRepository->selectColumnsFromRelationship('plant', $plant_attr);
+        $videoRepository
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($plant_attr);
 
         $videos = $videoRepository->getCollection();
 
@@ -85,7 +85,7 @@ class VideoController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreVideoRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreVideoRequest $request)
     {
@@ -107,7 +107,7 @@ class VideoController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -124,7 +124,7 @@ class VideoController extends Controller
      *
      * @param  \App\Http\Requests\UpdateVideoRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateVideoRequest $request, $id)
     {
@@ -156,7 +156,7 @@ class VideoController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {

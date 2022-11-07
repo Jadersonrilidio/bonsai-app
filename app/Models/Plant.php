@@ -78,7 +78,7 @@ class Plant extends Model
     /**
      * 
      */
-    public function bonsaiStyles()
+    public function bonsaiStyle()
     {
         return $this->belongsTo('App\Models\BonsaiStyle', 'bonsai_style_id', 'id');
     }

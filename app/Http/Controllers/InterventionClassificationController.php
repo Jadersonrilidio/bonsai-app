@@ -9,10 +9,13 @@ use Illuminate\Http\Request;
 use App\Repositories\InterventionClassificationRepository;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
 
 class InterventionClassificationController extends Controller
 {
-    use ErrorResponses, RewriteModelRules;
+    use ErrorResponses,
+        RewriteModelRules,
+        SetRequestInputs;
 
     /**
      * InterventionClassification model instance.
@@ -44,24 +47,20 @@ class InterventionClassificationController extends Controller
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $int_attr = $request->get('int_attr') ?? '';
+        $filter = $this->setFilters('filter', $request);
+        $attr = $this->setAttr('attr', $request);
+        $int_attr = $this->setRelAttr('interventions', 'intervention_classification_id', 'int_attr', $request);
 
         $interventionClassificationRepository = new InterventionClassificationRepository($this->interventionClassification);
 
-        if ($filter)
-            $interventionClassificationRepository->filterRegistersFromModel($filter);
-
-        if ($attr)
-            $interventionClassificationRepository->selectColumnsFromModel($attr);
-
-        if ($int_attr)
-            $interventionClassificationRepository->selectColumnsFromRelationship('interventions', $int_attr);
+        $interventionClassificationRepository
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($int_attr);
 
         $interventionClassifications = $interventionClassificationRepository->getCollection();
 
@@ -72,7 +71,7 @@ class InterventionClassificationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreInterventionClassificationRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreInterventionClassificationRequest $request)
     {
@@ -87,7 +86,7 @@ class InterventionClassificationController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -104,7 +103,7 @@ class InterventionClassificationController extends Controller
      *
      * @param  \App\Http\Requests\UpdateInterventionClassificationRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateInterventionClassificationRequest $request, $id)
     {
@@ -128,7 +127,7 @@ class InterventionClassificationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {

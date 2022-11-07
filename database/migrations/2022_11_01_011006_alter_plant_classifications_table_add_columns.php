@@ -14,7 +14,7 @@ class AlterPlantClassificationsTableAddColumns extends Migration
     public function up()
     {
         Schema::table('plant_classifications', function (Blueprint $table) {
-            $table->text('description');
+            $table->text('description')->nulable()->default(null);
         });
     }
 

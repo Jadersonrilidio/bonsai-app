@@ -14,8 +14,8 @@ class AlterPicturesTableAddColumns extends Migration
     public function up()
     {
         Schema::table('pictures', function (Blueprint $table) {
-            $table->string('title', 64);
-            $table->text('description');
+            $table->string('title', 64)->nulable()->default(null);
+            $table->text('description')->nulable()->default(null);
         });
     }
 
