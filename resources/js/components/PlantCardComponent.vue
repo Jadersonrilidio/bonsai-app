@@ -2,37 +2,37 @@
     <div class="card mt-4 card-plant" @click="showPlant($event)">
         <div class="row">
             <div class="col-md-4">
-                <img class="img-fluid rounded img" src="/storage/images/oKGHIjJ8t4UsR8EFUtuDfQGIhpFxFahFH32E8caS.jpg">
+                <img class="img-fluid rounded img" :src="'/storage/images/' + plant.main_picture">
             </div>
 
             <div class="col-md-8">
 
                 <div class="plant-name">
-                    Junípero
-                    <span class="scientific-name">(Juniperus Procumbens)</span>
+                    {{ plant.name }}
+                    <span class="scientific-name">{{ '(' + plant.specimen + ')' }}</span>
                 </div>
 
                 <table class="table table-sm table-borderless table-cels">
                     <tbody>
                         <tr>
                             <th scope="row">Type</th>
-                            <td>Bonsai</td>
+                            <td>{{ plant.type }}</td>
                         </tr>
                         <tr>
                             <th scope="row">Style</th>
-                            <td>tree-over-rock</td>
+                            <td>{{ plant.style }}</td>
                         </tr>
                         <tr>
                             <th scope="row">Age</th>
-                            <td>23 years</td>
+                            <td>{{ plant.age + ' years old'}}</td>
                         </tr>
                         <tr>
                             <th scope="row">Height</th>
-                            <td>50 centimeters</td>
+                            <td>{{ plant.height + ' centimeters' }}</td>
                         </tr>
                         <tr>
                             <th scope="row">Description</th>
-                            <td>Juniperus over rock is so cool...</td>
+                            <td>{{ plant.description.substring(0, 30) + ' ...' }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -46,7 +46,7 @@
 <script>
     export default {
         props: [
-            
+            'plant'
         ],
         data() {
             return {
@@ -67,7 +67,7 @@
         max-width: 74%;
         align-content: center;
         margin: 10px auto;
-        cursor: pointer; 
+        cursor: pointer !important;
     }
 
     .card-plant:hover{

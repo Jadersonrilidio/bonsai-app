@@ -24,19 +24,19 @@
                             </div>
                             <div class="col-md-6">
                                 <li class="nav-item">
-                                    <a class="btn btn-sm btn-primary" style="float:right" href="#">Create bonsai</a>
+                                    <a class="btn btn-sm btn-primary" style="float:right" :href="plantCreateUrl">Create bonsai</a>
                                 </li>
                             </div>
                     </div>
 
                     <div class="card-body">
-                        <plant-card-component></plant-card-component>
-                        <plant-card-component></plant-card-component>
-                        <plant-card-component></plant-card-component>
+                        <plant-card-component :plant="plant"></plant-card-component>
+                        <plant-card-component :plant="plant"></plant-card-component>
+                        <plant-card-component :plant="plant"></plant-card-component>
                     </div>
 
                     <div class="card-footer">
-                        <a class="btn btn-sm btn-primary" style="float:right" href="#">Create bonsai</a>
+                        <a class="btn btn-sm btn-primary" style="float:right" :href="plantCreateUrl">Create bonsai</a>
                     </div>
 
                 </div>
@@ -54,6 +54,17 @@
         ],
         data() {
             return {
+                plantCreateUrl: this.$store.state.baseUrl + '/plant/create',
+                plant: {
+                    name: 'Junípero',
+                    specimen: 'Juniperus Procumbens',
+                    main_picture: 'oKGHIjJ8t4UsR8EFUtuDfQGIhpFxFahFH32E8caS.jpg',
+                    type: 'Bonsai',
+                    style: 'tree-over-rock',
+                    age: '23',
+                    height: '50',
+                    description: 'Juniperus over rock is so cool and bla bla bla and much more text and words and nothing makes sense anymore and so and so'
+                },
                 plants: [],
                 plantsCounter: {
                     all: 0,

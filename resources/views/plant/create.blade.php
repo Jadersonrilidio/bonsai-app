@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    
-    <div class="container">
-        Plant CREATE here!
-    </div>
+
+    <plant-create-component> </plant-create-component>
 
 @endsection
