@@ -5591,7 +5591,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: [],
   data: function data() {
-    return {};
+    return {
+      bonsaiStyles: [],
+      plantClassifications: []
+    };
+  },
+  methods: {
+    loadPlantClassification: function loadPlantClassification() {
+      var _this = this;
+      var url = this.$store.state.baseUrl + '/api/v1/plant-classification';
+      axios.get(url).then(function (response) {
+        _this.plantClassifications = response.data;
+      })["catch"](function (errors) {
+        console.log(errors.reponse);
+      });
+    },
+    loadBonsaiStyles: function loadBonsaiStyles() {
+      var _this2 = this;
+      var url = this.$store.state.baseUrl + '/api/v1/bonsai-style';
+      axios.get(url).then(function (response) {
+        _this2.bonsaiStyles = response.data;
+      })["catch"](function (errors) {
+        console.log(errors.reponse);
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.loadBonsaiStyles();
+    this.loadPlantClassification();
   }
 });
 
@@ -6129,18 +6156,58 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _vm._m(0);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
   }, [_c("div", {
     staticClass: "row form-layout justify-content-center"
   }, [_c("div", {
     staticClass: "col-md-10"
-  }, [_c("form", [_c("div", {
+  }, [_c("form", [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+    staticClass: "row mb-3"
+  }, [_c("div", {
+    staticClass: "form-group col-md-6"
+  }, [_c("label", [_vm._v("Style")]), _vm._v(" "), _c("select", {
+    staticClass: "form-control",
+    attrs: {
+      name: "style"
+    }
+  }, [_c("option", {
+    staticClass: "default-option",
+    attrs: {
+      value: ""
+    }
+  }, [_vm._v("-- Select a bonsai style --")]), _vm._v(" "), _vm._l(_vm.bonsaiStyles, function (style, key) {
+    return _c("option", {
+      key: key,
+      domProps: {
+        value: style.id
+      }
+    }, [_vm._v("\n                            " + _vm._s(style.title) + "\n                            ")]);
+  })], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-6"
+  }, [_c("label", [_vm._v("Classification")]), _vm._v(" "), _c("select", {
+    staticClass: "form-control",
+    attrs: {
+      name: "plant_class"
+    }
+  }, [_c("option", {
+    staticClass: "default-option",
+    attrs: {
+      value: ""
+    }
+  }, [_vm._v("-- Select a plant classification --")]), _vm._v(" "), _vm._l(_vm.plantClassifications, function (classification, key) {
+    return _c("option", {
+      key: key,
+      domProps: {
+        value: classification.id
+      }
+    }, [_vm._v("\n                            " + _vm._s(classification.title) + "\n                            ")]);
+  })], 2)])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4)])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
     staticClass: "form-group col-md-3"
@@ -6170,10 +6237,13 @@ var staticRenderFns = [function () {
     attrs: {
       type: "file",
       required: "",
-      name: "main_picture",
-      id: "form-main-picture"
+      name: "main_picture"
     }
-  })])])]), _vm._v(" "), _c("div", {
+  })])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
     staticClass: "form-group col-md-6"
@@ -6205,78 +6275,11 @@ var staticRenderFns = [function () {
       required: "",
       placeholder: "Ex: Juniperus Procumbens"
     }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "row mb-3"
-  }, [_c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", {
-    attrs: {
-      "for": "form-style"
-    }
-  }, [_vm._v("Style")]), _vm._v(" "), _c("select", {
-    staticClass: "form-control",
-    attrs: {
-      name: "style",
-      id: "form-style"
-    }
-  }, [_c("option", {
-    staticStyle: {
-      color: "gray"
-    },
-    attrs: {
-      value: ""
-    }
-  }, [_vm._v(" -- Select a bonsai style -- ")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "1"
-    }
-  }, [_vm._v("Shokkan")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "2"
-    }
-  }, [_vm._v("Morigami")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "3"
-    }
-  }, [_vm._v("Kabudachi")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "3"
-    }
-  }, [_vm._v("Kengai")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "3"
-    }
-  }, [_vm._v("Han-Kengai")])])]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", {
-    attrs: {
-      "for": "plant_class"
-    }
-  }, [_vm._v("Classification")]), _vm._v(" "), _c("select", {
-    staticClass: "form-control",
-    attrs: {
-      name: "plant_class"
-    }
-  }, [_c("option", {
-    staticStyle: {
-      color: "gray"
-    },
-    attrs: {
-      value: ""
-    }
-  }, [_vm._v(" -- Select a plant classification -- ")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "1"
-    }
-  }, [_vm._v("Bonsay")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "2"
-    }
-  }, [_vm._v("Pre-bonsai")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "3"
-    }
-  }, [_vm._v("Seedling")])])])]), _vm._v(" "), _c("div", {
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
     staticClass: "form-group col-md-6"
@@ -6306,7 +6309,11 @@ var staticRenderFns = [function () {
       required: "",
       placeholder: "ex: 178 (centimeters)"
     }
-  })])]), _vm._v(" "), _c("div", {
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "row mb-5"
   }, [_c("div", {
     staticClass: "form-group"
@@ -6321,7 +6328,11 @@ var staticRenderFns = [function () {
       id: "form-description",
       rows: "2"
     }
-  })])]), _vm._v(" "), _c("div", {
+  })])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "row mb-3 justify-content-center"
   }, [_c("div", {
     staticClass: "form-group col-md-8"
@@ -6330,7 +6341,7 @@ var staticRenderFns = [function () {
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("Create")])])])])])])]);
+  }, [_vm._v("Create")])])]);
 }];
 render._withStripped = true;
 
@@ -12369,7 +12380,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.form-layout {\n    background-color: rgb(229, 235, 229);\n    border-radius: 20px;\n    margin: 10px auto;\n    padding-top: 20px;\n    padding-bottom: 50px;\n    max-width: 80%;\n}\n.form-title {\n    text-align: center;\n    padding-bottom: 20px;\n    padding-top: 20px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.form-layout {\n    background-color: rgb(229, 235, 229);\n    border-radius: 20px;\n    margin: 10px auto;\n    padding-top: 20px;\n    padding-bottom: 50px;\n    max-width: 80%;\n}\n.form-title {\n    text-align: center;\n    padding-bottom: 20px;\n    padding-top: 20px;\n}\n.default-option {\n    color: gray;\n    font-style: italic;\n    text-align: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -13,7 +13,7 @@
                         </div>
                         <div style="height:30%"></div>
                         <div style="height:40%">
-                            <input class="form-control-file" type="file" required name="main_picture" id="form-main-picture">
+                            <input class="form-control-file" type="file" required name="main_picture">
                         </div>
                     </div>
                 </div>
@@ -31,23 +31,29 @@
 
                 <div class="row mb-3">
                     <div class="form-group col-md-6">
-                        <label for="form-style">Style</label>
-                        <select class="form-control" name="style" id="form-style">
-                            <option style="color:gray" value=""> -- Select a bonsai style -- </option>
-                            <option value="1">Shokkan</option>
-                            <option value="2">Morigami</option>
-                            <option value="3">Kabudachi</option>
-                            <option value="3">Kengai</option>
-                            <option value="3">Han-Kengai</option>
+                        <label>Style</label>
+                        <select class="form-control" name="style">
+                            <option value="" class="default-option">-- Select a bonsai style --</option>
+                            <option
+                                v-for="style, key in bonsaiStyles"
+                                :key="key"
+                                :value="style.id"
+                            >
+                            {{ style.title }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="plant_class">Classification</label>
+                        <label>Classification</label>
                         <select class="form-control" name="plant_class">
-                            <option style="color:gray" value=""> -- Select a plant classification -- </option>
-                            <option value="1">Bonsay</option>
-                            <option value="2">Pre-bonsai</option>
-                            <option value="3">Seedling</option>
+                            <option value="" class="default-option">-- Select a plant classification --</option>
+                            <option
+                                v-for="classification, key in plantClassifications"
+                                :key="key"
+                                :value="classification.id"
+                            >
+                            {{ classification.title }}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -87,8 +93,37 @@
         ],
         data() {
             return {
-                
+                bonsaiStyles: [],
+                plantClassifications: [],
             }
+        },
+        methods: {
+            loadPlantClassification() {
+                let url = this.$store.state.baseUrl + '/api/v1/plant-classification';
+
+                axios.get(url)
+                    .then(response => {
+                        this.plantClassifications = response.data;
+                    })
+                    .catch(errors => {
+                        console.log(errors.reponse);
+                    })
+            },
+            loadBonsaiStyles() {
+                let url = this.$store.state.baseUrl + '/api/v1/bonsai-style';
+
+                axios.get(url)
+                    .then(response => {
+                        this.bonsaiStyles = response.data;
+                    })
+                    .catch(errors => {
+                        console.log(errors.reponse);
+                    })
+            }
+        },
+        mounted() {
+            this.loadBonsaiStyles();
+            this.loadPlantClassification();
         }
     }
 </script>
@@ -106,5 +141,10 @@
         text-align: center;
         padding-bottom: 20px;
         padding-top: 20px;
+    }
+    .default-option {
+        color: gray;
+        font-style: italic;
+        text-align: center;
     }
 </style>
