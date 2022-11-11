@@ -17,7 +17,7 @@
                                 <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
     
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control is-invalid" name="name" value="" required autocomplete="name" autofocus>
+                                    <input id="name" type="text" class="form-control" name="name" value="" required autocomplete="name" autofocus>
                                 </div>
                             </div>
     

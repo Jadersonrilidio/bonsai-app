@@ -93,6 +93,7 @@ class PlantController extends Controller
         $request->validate($this->plant->rules(), $this->plant->feedback());
 
         $inputs = $request->all();
+        $inputs['user_id'] = auth()->user()->id; //todo
 
         if ($request->has('main_picture')) {
             $image_urn = $this->storeImage($request, $this->storageVars);
@@ -152,6 +153,9 @@ class PlantController extends Controller
 
         if ($plant == null)
             return $this->notFound();
+
+        if ($plant->user_id != auth()->user()->id)
+            return $this->unauthorized(); //todo
 
         $rules = $this->rewriteRules($request, $plant);
 

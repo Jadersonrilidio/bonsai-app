@@ -39,7 +39,7 @@ class Plant extends Model
     public function rules()
     {
         return array(
-            'user_id'                 => 'required|exists:users,id',
+            // 'user_id'                 => 'required|exists:users,id',
             'plant_classification_id' => 'required|exists:plant_classifications,id',
             'bonsai_style_id'         => 'required|exists:bonsai_styles,id',
             'name'                    => 'required|min:3|max:64',

@@ -5593,7 +5593,24 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       bonsaiStyles: [],
-      plantClassifications: []
+      plantClassifications: [],
+      plant: {
+        main_picture: null,
+        name: null,
+        specimen: null,
+        bonsai_style_id: '',
+        plant_classification_id: '',
+        age: null,
+        height: null,
+        description: null
+      },
+      transaction: {
+        status: '',
+        message: '',
+        alert: '',
+        object: {},
+        errors: []
+      }
     };
   },
   methods: {
@@ -5613,6 +5630,27 @@ __webpack_require__.r(__webpack_exports__);
         _this2.bonsaiStyles = response.data;
       })["catch"](function (errors) {
         console.log(errors.reponse);
+      });
+    },
+    createPlant: function createPlant() {
+      var _this3 = this;
+      var url = this.$store.state.baseUrl + '/api/v1/plant';
+      var formData = new FormData();
+      Object.keys(this.plant).forEach(function (attribute) {
+        if (_this3.plant[attribute]) formData.append(attribute, _this3.plant[attribute]);
+      });
+      axios.post(url, formData).then(function (response) {
+        _this3.transaction.status = 'success';
+        _this3.transaction.message = 'New bonsai created';
+        _this3.transaction.alert = 'success';
+        _this3.transaction.object = response.data;
+        console.log(response);
+      })["catch"](function (errors) {
+        _this3.transaction.status = 'error';
+        _this3.transaction.message = 'error';
+        _this3.transaction.alert = 'danger';
+        _this3.transaction.errors = errors.response.data.errors;
+        console.log(errors.response);
       });
     }
   },
@@ -6158,51 +6196,221 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
-  }, [_c("div", {
+  }, [_vm.transaction.status ? _c("div", {
+    "class": _vm.transaction.alert
+  }, [_c("pre", [_vm._v("            status alert example\n            " + _vm._s(_vm.transaction.object) + "\n        ")])]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "row form-layout justify-content-center"
   }, [_c("div", {
     staticClass: "col-md-10"
-  }, [_c("form", [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+  }, [_c("form", [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", [_vm._v("Style")]), _vm._v(" "), _c("select", {
+    staticClass: "form-group col-md-4"
+  }, [_c("label", [_vm._v("Name")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.name,
+      expression: "plant.name"
+    }],
     staticClass: "form-control",
     attrs: {
-      name: "style"
+      type: "text",
+      required: "",
+      placeholder: "Name"
+    },
+    domProps: {
+      value: _vm.plant.name
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.plant, "name", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-4"
+  }, [_c("label", [_vm._v("Scientific Name")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.specimen,
+      expression: "plant.specimen"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ex: Juniperus Procumbens"
+    },
+    domProps: {
+      value: _vm.plant.specimen
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.plant, "specimen", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-4"
+  }, [_c("label", [_vm._v("Style")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.bonsai_style_id,
+      expression: "plant.bonsai_style_id"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.plant, "bonsai_style_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
     }
   }, [_c("option", {
     staticClass: "default-option",
     attrs: {
       value: ""
     }
-  }, [_vm._v("-- Select a bonsai style --")]), _vm._v(" "), _vm._l(_vm.bonsaiStyles, function (style, key) {
+  }, [_vm._v("-- Select bonsai style --")]), _vm._v(" "), _vm._l(_vm.bonsaiStyles, function (style, key) {
     return _c("option", {
       key: key,
       domProps: {
         value: style.id
       }
     }, [_vm._v("\n                            " + _vm._s(style.title) + "\n                            ")]);
-  })], 2)]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", [_vm._v("Classification")]), _vm._v(" "), _c("select", {
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "row mb-3"
+  }, [_c("div", {
+    staticClass: "form-group col-md-4"
+  }, [_c("label", [_vm._v("Age")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.age,
+      expression: "plant.age"
+    }],
     staticClass: "form-control",
     attrs: {
-      name: "plant_class"
+      type: "date",
+      placeholder: "Ex: (mm-dd-YYYY)"
+    },
+    domProps: {
+      value: _vm.plant.age
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.plant, "age", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-4"
+  }, [_c("label", [_vm._v("Height")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.height,
+      expression: "plant.height"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ex: 178 (centimeters)"
+    },
+    domProps: {
+      value: _vm.plant.height
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.plant, "height", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-4"
+  }, [_c("label", [_vm._v("Classification")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.plant_classification_id,
+      expression: "plant.plant_classification_id"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.plant, "plant_classification_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
     }
   }, [_c("option", {
     staticClass: "default-option",
     attrs: {
       value: ""
     }
-  }, [_vm._v("-- Select a plant classification --")]), _vm._v(" "), _vm._l(_vm.plantClassifications, function (classification, key) {
+  }, [_vm._v("-- Select plant classification --")]), _vm._v(" "), _vm._l(_vm.plantClassifications, function (classification, key) {
     return _c("option", {
       key: key,
       domProps: {
         value: classification.id
       }
     }, [_vm._v("\n                            " + _vm._s(classification.title) + "\n                            ")]);
-  })], 2)])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4)])])])]);
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "row mb-5"
+  }, [_c("div", {
+    staticClass: "form-group"
+  }, [_c("label", [_vm._v("Description")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.plant.description,
+      expression: "plant.description"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      rows: "2"
+    },
+    domProps: {
+      value: _vm.plant.description
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.plant, "description", $event.target.value);
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "row mb-3 justify-content-center"
+  }, [_c("div", {
+    staticClass: "form-group col-md-8"
+  }, [_c("button", {
+    staticClass: "btn btn-lg btn-success form-control",
+    attrs: {
+      type: "submit"
+    },
+    on: {
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.createPlant();
+      }
+    }
+  }, [_vm._v("\n                            Create\n                        ")])])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -6210,28 +6418,22 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
-    staticClass: "form-group col-md-3"
+    staticClass: "form-group col-md-4"
   }, [_c("img", {
+    staticClass: "img-fluid",
     attrs: {
-      src: "/images/bonsai-profile-portrait-01.png",
-      width: "200px"
+      src: "/images/bonsai-profile-portrait-01.png"
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-9"
+    staticClass: "form-group col-md-8"
   }, [_c("div", {
-    staticStyle: {
-      height: "30%"
-    }
+    staticClass: "h-30"
   }, [_c("h1", {
     staticClass: "form-title"
   }, [_vm._v("Create new bonsai")])]), _vm._v(" "), _c("div", {
-    staticStyle: {
-      height: "30%"
-    }
+    staticClass: "h-40"
   }), _vm._v(" "), _c("div", {
-    staticStyle: {
-      height: "40%"
-    }
+    staticClass: "h-30"
   }, [_c("input", {
     staticClass: "form-control-file",
     attrs: {
@@ -6240,108 +6442,6 @@ var staticRenderFns = [function () {
       name: "main_picture"
     }
   })])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "row mb-3"
-  }, [_c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", {
-    attrs: {
-      "for": "form-name"
-    }
-  }, [_vm._v("Name")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      name: "name",
-      id: "form-name",
-      required: "",
-      placeholder: "Name"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", {
-    attrs: {
-      "for": "form-specimen"
-    }
-  }, [_vm._v("Scientific Name")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      name: "specimen",
-      id: "form-specimen",
-      required: "",
-      placeholder: "Ex: Juniperus Procumbens"
-    }
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "row mb-3"
-  }, [_c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", {
-    attrs: {
-      "for": "age"
-    }
-  }, [_vm._v("Age")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      name: "age",
-      required: "",
-      placeholder: "ex: 23 (years)"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-6"
-  }, [_c("label", {
-    attrs: {
-      "for": "height"
-    }
-  }, [_vm._v("Height")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      name: "height",
-      required: "",
-      placeholder: "ex: 178 (centimeters)"
-    }
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "row mb-5"
-  }, [_c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": "form-description"
-    }
-  }, [_vm._v("Description")]), _vm._v(" "), _c("textarea", {
-    staticClass: "form-control",
-    attrs: {
-      name: "form-description",
-      id: "form-description",
-      rows: "2"
-    }
-  })])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "row mb-3 justify-content-center"
-  }, [_c("div", {
-    staticClass: "form-group col-md-8"
-  }, [_c("button", {
-    staticClass: "btn btn-success btn-lg form-control",
-    attrs: {
-      type: "submit"
-    }
-  }, [_vm._v("Create")])])]);
 }];
 render._withStripped = true;
 
@@ -6837,7 +6937,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Name")]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("input", {
-    staticClass: "form-control is-invalid",
+    staticClass: "form-control",
     attrs: {
       id: "name",
       type: "text",
@@ -12380,7 +12480,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.form-layout {\n    background-color: rgb(229, 235, 229);\n    border-radius: 20px;\n    margin: 10px auto;\n    padding-top: 20px;\n    padding-bottom: 50px;\n    max-width: 80%;\n}\n.form-title {\n    text-align: center;\n    padding-bottom: 20px;\n    padding-top: 20px;\n}\n.default-option {\n    color: gray;\n    font-style: italic;\n    text-align: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.form-layout {\n    background-color: rgb(229, 235, 229);\n    border-radius: 20px;\n    margin: 10px auto;\n    padding-top: 20px;\n    padding-bottom: 50px;\n    max-width: 80%;\n}\n.form-title {\n    text-align: center;\n    padding-bottom: 20px;\n    padding-top: 20px;\n}\n.h-30 {\n    height: 30%;\n}\n.h-40 {\n    height: 40%;\n}\n.default-option {\n    color: gray;\n    font-style: italic;\n}\n.success {\n    background-color: greenyellow;\n}\n.danger {\n    background-color: lightcoral;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
