@@ -2,8 +2,6 @@
 
 @section('content')
     
-    <div class="container">
-        Plant EDIT here!
-    </div>
+    <plant-edit-component></plant-edit-component>
 
 @endsection
