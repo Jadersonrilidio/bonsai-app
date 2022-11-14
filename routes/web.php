@@ -32,8 +32,7 @@ Route::get('/', function () {
 | @route  /profile/edit
 | @route  /settings
 */
-Route::middleware('auth')->group(function ($router) {
-
+Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
         return view('home');
     })->name('home');

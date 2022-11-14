@@ -68,9 +68,9 @@
                     </div>
                 </div>
 
-                <div class="row mb-3 justify-content-center">
+                <div class="form-group row mb-3 justify-content-center">
                     <div class="form-group col-md-4">
-                        <a class="btn btn-success form-control" :href="$store.state.baseUrl + '/plant/edit/2'">Edit</a>
+                        <a class="btn btn-success form-control" :href="$store.state.url + '/plant/edit/2'">Edit</a>
                     </div>
                     <div class="form-group col-md-4">
                         <button type="button" class="btn btn-danger form-control" data-bs-toggle="modal" data-bs-target="#deleteBonsai">Delete</button>

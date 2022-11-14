@@ -71,7 +71,6 @@
         ],
         data() {
             return {
-                pathUri: '/api/auth/login',
                 formInputs: {
                     email: {
                         classes: '',
@@ -86,7 +85,7 @@
         },
         methods: {
             login(event) { 
-                let url = this.$store.state.baseUrl + this.pathUri;
+                let url = this.$store.state.apiauthurl + '/login';
 
                 let formData = new FormData();
                 formData.append('email', this.formInputs.email.value);

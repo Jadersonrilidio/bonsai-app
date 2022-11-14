@@ -5372,7 +5372,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     loadUserPlants: function loadUserPlants() {
       var _this = this;
-      var url = this.$store.state.baseUrl + '/api/v1/plant';
+      var url = this.$store.state.apiurl + '/plant';
       axios.get(url).then(function (response) {
         _this.plants = response.data;
         _this.counterPlants();
@@ -5437,7 +5437,6 @@ __webpack_require__.r(__webpack_exports__);
   props: ['csrf_token'],
   data: function data() {
     return {
-      pathUri: '/api/auth/login',
       formInputs: {
         email: {
           classes: '',
@@ -5453,7 +5452,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     login: function login(event) {
       var _this = this;
-      var url = this.$store.state.baseUrl + this.pathUri;
+      var url = this.$store.state.apiauthurl + '/login';
       var formData = new FormData();
       formData.append('email', this.formInputs.email.value);
       formData.append('password', this.formInputs.password.value);
@@ -5594,6 +5593,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       bonsaiStyles: [],
       plantClassifications: [],
+      pictureUrl: null,
       plant: {
         main_picture: null,
         name: null,
@@ -5605,9 +5605,8 @@ __webpack_require__.r(__webpack_exports__);
         description: null
       },
       transaction: {
-        status: '',
+        alert: false,
         message: '',
-        alert: '',
         object: {},
         errors: []
       }
@@ -5616,7 +5615,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     loadPlantClassification: function loadPlantClassification() {
       var _this = this;
-      var url = this.$store.state.baseUrl + '/api/v1/plant-classification';
+      var url = this.$store.state.apiurl + '/plant-classification';
       axios.get(url).then(function (response) {
         _this.plantClassifications = response.data;
       })["catch"](function (errors) {
@@ -5625,7 +5624,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadBonsaiStyles: function loadBonsaiStyles() {
       var _this2 = this;
-      var url = this.$store.state.baseUrl + '/api/v1/bonsai-style';
+      var url = this.$store.state.apiurl + '/bonsai-style';
       axios.get(url).then(function (response) {
         _this2.bonsaiStyles = response.data;
       })["catch"](function (errors) {
@@ -5634,24 +5633,73 @@ __webpack_require__.r(__webpack_exports__);
     },
     createPlant: function createPlant() {
       var _this3 = this;
-      var url = this.$store.state.baseUrl + '/api/v1/plant';
+      var url = this.$store.state.apiurl + '/plant';
       var formData = new FormData();
       Object.keys(this.plant).forEach(function (attribute) {
         if (_this3.plant[attribute]) formData.append(attribute, _this3.plant[attribute]);
       });
       axios.post(url, formData).then(function (response) {
-        _this3.transaction.status = 'success';
-        _this3.transaction.message = 'New bonsai created';
-        _this3.transaction.alert = 'success';
-        _this3.transaction.object = response.data;
+        _this3.resetTransactionValues();
+        _this3.transactionSuccess(response);
+        _this3.resetFormInputValues();
         console.log(response);
       })["catch"](function (errors) {
-        _this3.transaction.status = 'error';
-        _this3.transaction.message = 'error';
-        _this3.transaction.alert = 'danger';
-        _this3.transaction.errors = errors.response.data.errors;
+        _this3.resetTransactionValues();
+        _this3.transactionError(errors.response);
         console.log(errors.response);
       });
+    },
+    pickFile: function pickFile() {
+      var _this4 = this;
+      this.plant.main_picture = this.$refs.fileInput.files[0];
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        _this4.pictureUrl = e.target.result;
+      };
+      reader.readAsDataURL(this.plant.main_picture);
+    },
+    invalidate: function invalidate(attribute) {
+      return this.transaction.errors[attribute] ? 'is-invalid' : '';
+    },
+    invalidateUpload: function invalidateUpload() {
+      return this.transaction.errors.main_picture ? 'is-invalid is-invalid-img' : '';
+    },
+    resetFormInputValues: function resetFormInputValues() {
+      this.plant = {
+        main_picture: null,
+        name: null,
+        specimen: null,
+        bonsai_style_id: '',
+        plant_classification_id: '',
+        age: null,
+        height: null,
+        description: null
+      };
+    },
+    resetTransactionValues: function resetTransactionValues() {
+      this.transaction = {
+        alert: false,
+        message: '',
+        object: {},
+        errors: []
+      };
+    },
+    transactionSuccess: function transactionSuccess(response) {
+      this.transaction.alert = true;
+      this.transaction.message = 'New bonsai item created with success!';
+      this.transaction.object = response.data;
+    },
+    transactionError: function transactionError(response) {
+      this.transaction.alert = false;
+      this.transaction.errors = response.data.errors;
+    }
+  },
+  computed: {
+    plantViewLink: function plantViewLink() {
+      return this.$store.state.url + '/plant/' + this.transaction.object.id;
+    },
+    previewImg: function previewImg() {
+      return this.pictureUrl ? this.pictureUrl : '/images/bonsai-profile-portrait-01.png';
     }
   },
   mounted: function mounted() {
@@ -6196,13 +6244,52 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
-  }, [_vm.transaction.status ? _c("div", {
-    "class": _vm.transaction.alert
-  }, [_c("pre", [_vm._v("            status alert example\n            " + _vm._s(_vm.transaction.object) + "\n        ")])]) : _vm._e(), _vm._v(" "), _c("div", {
+  }, [_vm.transaction.alert ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v(" \n        " + _vm._s(_vm.transaction.message) + "\n        "), _c("a", {
+    staticClass: "btn",
+    attrs: {
+      href: _vm.plantViewLink
+    }
+  }, [_vm._v("\n            Click to view\n        ")])]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "row form-layout justify-content-center"
   }, [_c("div", {
     staticClass: "col-md-10"
-  }, [_c("form", [_vm._m(0), _vm._v(" "), _c("div", {
+  }, [_c("form", [_c("div", {
+    staticClass: "row mb-3"
+  }, [_c("div", {
+    staticClass: "form-group col-md-4"
+  }, [_c("img", {
+    staticClass: "img-fluid",
+    attrs: {
+      src: _vm.previewImg
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-md-8"
+  }, [_vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "h-40"
+  }), _vm._v(" "), _c("div", {
+    staticClass: "h-30 form-group"
+  }, [_c("input", {
+    ref: "fileInput",
+    staticClass: "form-control-file",
+    "class": _vm.invalidateUpload(),
+    attrs: {
+      type: "file"
+    },
+    on: {
+      input: _vm.pickFile
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.main_picture, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                    " + _vm._s(message) + "\n                                ")]);
+  }), 0)])])]), _vm._v(" "), _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
     staticClass: "form-group col-md-4"
@@ -6214,6 +6301,7 @@ var render = function render() {
       expression: "plant.name"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("name"),
     attrs: {
       type: "text",
       required: "",
@@ -6228,7 +6316,16 @@ var render = function render() {
         _vm.$set(_vm.plant, "name", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.name, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-4"
   }, [_c("label", [_vm._v("Scientific Name")]), _vm._v(" "), _c("input", {
     directives: [{
@@ -6238,6 +6335,7 @@ var render = function render() {
       expression: "plant.specimen"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("specimen"),
     attrs: {
       type: "text",
       placeholder: "Ex: Juniperus Procumbens"
@@ -6251,7 +6349,16 @@ var render = function render() {
         _vm.$set(_vm.plant, "specimen", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.specimen, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-4"
   }, [_c("label", [_vm._v("Style")]), _vm._v(" "), _c("select", {
     directives: [{
@@ -6261,6 +6368,7 @@ var render = function render() {
       expression: "plant.bonsai_style_id"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("bonsai_style_id"),
     attrs: {
       required: ""
     },
@@ -6287,7 +6395,16 @@ var render = function render() {
         value: style.id
       }
     }, [_vm._v("\n                            " + _vm._s(style.title) + "\n                            ")]);
-  })], 2)])]), _vm._v(" "), _c("div", {
+  })], 2), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.bonsai_style_id, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)])]), _vm._v(" "), _c("div", {
     staticClass: "row mb-3"
   }, [_c("div", {
     staticClass: "form-group col-md-4"
@@ -6299,6 +6416,7 @@ var render = function render() {
       expression: "plant.age"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("age"),
     attrs: {
       type: "date",
       placeholder: "Ex: (mm-dd-YYYY)"
@@ -6312,7 +6430,16 @@ var render = function render() {
         _vm.$set(_vm.plant, "age", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.age, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-4"
   }, [_c("label", [_vm._v("Height")]), _vm._v(" "), _c("input", {
     directives: [{
@@ -6322,6 +6449,7 @@ var render = function render() {
       expression: "plant.height"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("height"),
     attrs: {
       type: "text",
       placeholder: "Ex: 178 (centimeters)"
@@ -6335,7 +6463,16 @@ var render = function render() {
         _vm.$set(_vm.plant, "height", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.height, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-4"
   }, [_c("label", [_vm._v("Classification")]), _vm._v(" "), _c("select", {
     directives: [{
@@ -6345,6 +6482,7 @@ var render = function render() {
       expression: "plant.plant_classification_id"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("plant_classification_id"),
     attrs: {
       required: ""
     },
@@ -6371,7 +6509,16 @@ var render = function render() {
         value: classification.id
       }
     }, [_vm._v("\n                            " + _vm._s(classification.title) + "\n                            ")]);
-  })], 2)])]), _vm._v(" "), _c("div", {
+  })], 2), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.plant_classification_id, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)])]), _vm._v(" "), _c("div", {
     staticClass: "row mb-5"
   }, [_c("div", {
     staticClass: "form-group"
@@ -6383,6 +6530,7 @@ var render = function render() {
       expression: "plant.description"
     }],
     staticClass: "form-control",
+    "class": _vm.invalidate("description"),
     attrs: {
       rows: "2"
     },
@@ -6395,7 +6543,16 @@ var render = function render() {
         _vm.$set(_vm.plant, "description", $event.target.value);
       }
     }
-  })])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "invalid-feedback",
+    attrs: {
+      role: "alert"
+    }
+  }, _vm._l(_vm.transaction.errors.description, function (message, key) {
+    return _c("i", {
+      key: key
+    }, [_vm._v("\n                                " + _vm._s(message) + "\n                            ")]);
+  }), 0)])]), _vm._v(" "), _c("div", {
     staticClass: "row mb-3 justify-content-center"
   }, [_c("div", {
     staticClass: "form-group col-md-8"
@@ -6416,32 +6573,10 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "row mb-3"
-  }, [_c("div", {
-    staticClass: "form-group col-md-4"
-  }, [_c("img", {
-    staticClass: "img-fluid",
-    attrs: {
-      src: "/images/bonsai-profile-portrait-01.png"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-md-8"
-  }, [_c("div", {
     staticClass: "h-30"
   }, [_c("h1", {
     staticClass: "form-title"
-  }, [_vm._v("Create new bonsai")])]), _vm._v(" "), _c("div", {
-    staticClass: "h-40"
-  }), _vm._v(" "), _c("div", {
-    staticClass: "h-30"
-  }, [_c("input", {
-    staticClass: "form-control-file",
-    attrs: {
-      type: "file",
-      required: "",
-      name: "main_picture"
-    }
-  })])])]);
+  }, [_vm._v("Create new bonsai")])]);
 }];
 render._withStripped = true;
 
@@ -6716,13 +6851,13 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "col-md-10"
   }, [_c("form", [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _vm._m(7), _vm._v(" "), _c("div", {
-    staticClass: "row mb-3 justify-content-center"
+    staticClass: "form-group row mb-3 justify-content-center"
   }, [_c("div", {
     staticClass: "form-group col-md-4"
   }, [_c("a", {
     staticClass: "btn btn-success form-control",
     attrs: {
-      href: _vm.$store.state.baseUrl + "/plant/edit/2"
+      href: _vm.$store.state.url + "/plant/edit/2"
     }
   }, [_vm._v("Edit")])]), _vm._v(" "), _vm._m(8)])])])])]);
 };
@@ -7059,7 +7194,9 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
 Vue.use(vuex__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_0__["default"].Store({
   state: {
-    baseUrl: 'http://localhost:8000',
+    url: 'http://localhost:8000',
+    apiurl: 'http://localhost:8000/api/v1',
+    apiauthurl: 'http://localhost:8000/api/auth',
     plantClassificationId: null,
     item: {},
     plant: {
@@ -12480,7 +12617,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.form-layout {\n    background-color: rgb(229, 235, 229);\n    border-radius: 20px;\n    margin: 10px auto;\n    padding-top: 20px;\n    padding-bottom: 50px;\n    max-width: 80%;\n}\n.form-title {\n    text-align: center;\n    padding-bottom: 20px;\n    padding-top: 20px;\n}\n.h-30 {\n    height: 30%;\n}\n.h-40 {\n    height: 40%;\n}\n.default-option {\n    color: gray;\n    font-style: italic;\n}\n.success {\n    background-color: greenyellow;\n}\n.danger {\n    background-color: lightcoral;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.form-layout {\n    background-color: rgb(229, 235, 229);\n    border-radius: 20px;\n    margin: 10px auto;\n    padding-top: 20px;\n    padding-bottom: 50px;\n    max-width: 80%;\n}\n.form-title {\n    text-align: center;\n}\n.h-30 {\n    height: 30%;\n}\n.h-40 {\n    height: 40%;\n}\n.default-option {\n    color: gray;\n    font-style: italic;\n    text-align: center;\n}\n.success {\n    background-color: greenyellow;\n}\n.danger {\n    background-color: lightcoral;\n}\n.is-invalid-img {\n    color: red;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

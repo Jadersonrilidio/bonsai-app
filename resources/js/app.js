@@ -17,7 +17,9 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
-        baseUrl: 'http://localhost:8000',
+        url: 'http://localhost:8000',
+        apiurl: 'http://localhost:8000/api/v1',
+        apiauthurl: 'http://localhost:8000/api/auth',
         plantClassificationId: null,
         item: {
 

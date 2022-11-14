@@ -52,7 +52,7 @@
         },
         methods: {
             loadUserPlants() {
-                let url = this.$store.state.baseUrl + '/api/v1/plant';
+                let url = this.$store.state.apiurl + '/plant';
 
                 axios.get(url)
                     .then(response => {
