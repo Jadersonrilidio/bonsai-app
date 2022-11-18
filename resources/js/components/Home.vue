@@ -1,26 +1,38 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+        <div class="row form-layout justify-content-center">
+            <div class="col-md-10 text-center">
 
-                <div class="card text-center">
-    
-                    <div class="card-body">
-                        
-                        <h5 class="card-title">
-                            {{ card.title }}
-                        </h5>
-                        
-                        <h6 class="card-subtitle">
-                            {{ card.subtitle }}
-                        </h6>
+                <h3 class="mb-5">
+                    {{ card.title }}
+                </h3>
+                
+                <div class="row justify-content-center">
 
-                        <p class="card-text">Plants: {{ plantsCounter.all }}</p>
-                        <p class="card-text">Bonsai: {{ plantsCounter.bonsai }}</p>
-                        <p class="card-text">Pre-bonsai: {{ plantsCounter.preBonsai }}</p>
-                        <p class="card-text">Seedlings: {{ plantsCounter.seedlings }}</p>
-
+                    <div class="card" style="width: 10rem; margin-right:30px">
+                        <img src="/images/bonsai-vector.png" class="card-img-top">
+                        <div class="card-body" style="color:#198754; font-weight:bolder">
+                            <h5 class="card-title">Bonsai</h5>
+                            <p class="card-text">{{ plantsCounter.bonsai }}</p>
+                        </div>
                     </div>
+    
+                    <div class="card" style="width: 10rem;">
+                        <img src="/images/pre-bonsai-vector.png" class="card-img-top">
+                        <div class="card-body" style="color:#ffcc00; font-weight:bolder">
+                            <h5 class="card-title">Pre-bonsai</h5>
+                            <p class="card-text">{{ plantsCounter.preBonsai }}</p>
+                        </div>
+                    </div>
+    
+                    <div class="card" style="width: 10rem; margin-left:30px">
+                        <img src="/images/seedling-vector3.png" class="card-img-top">
+                        <div class="card-body" style="color:#6c757d; font-weight:bolder">
+                            <h5 class="card-title">Seedlings</h5>
+                            <p class="card-text">{{ plantsCounter.seedlings }}</p>
+                        </div>
+                    </div>
+                    
                 </div>
 
             </div>
@@ -87,3 +99,14 @@
         }
     }
 </script>
+
+<style>
+    .form-layout {
+        background-color: rgb(229, 235, 229);
+        border-radius: 20px;
+        margin: 10px auto;
+        padding-top: 20px;
+        padding-bottom: 50px;
+        max-width: 80%;
+    }
+</style>

@@ -69,17 +69,11 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
-                                    <a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
-                                    <a class="dropdown-item" href="{{ route('user.settings') }}">Settings</a>
-                                    <div class="dropdown-divider"></div>
-
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>

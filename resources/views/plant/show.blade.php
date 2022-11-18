@@ -2,6 +2,6 @@
 
 @section('content')
 
-    <plant-view-component></plant-view-component>
+    <plant-view-component plantid="{{ $plant_id }}" ></plant-view-component>
 
 @endsection

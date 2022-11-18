@@ -17,13 +17,12 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
+        item: {},
         url: 'http://localhost:8000',
         apiurl: 'http://localhost:8000/api/v1',
         apiauthurl: 'http://localhost:8000/api/auth',
         plantClassificationId: null,
-        item: {
-
-        },
+        plantId: null,
         plant: {
             user_id: '',
             bonsai_style_id: '',
@@ -64,7 +63,6 @@ Vue.component('card-component', require('./components/CardComponent.vue').defaul
 Vue.component('input-container-component', require('./components/InputContainerComponent.vue').default);
 Vue.component('plant-card-component', require('./components/PlantCardComponent.vue').default);
 Vue.component('plant-create-component', require('./components/PlantCreate.vue').default);
-Vue.component('plant-edit-component', require('./components/PlantEdit.vue').default);
 Vue.component('plant-view-component', require('./components/PlantView.vue').default);
 
 Vue.component('register-component', require('./components/Register.vue').default);
