@@ -27,18 +27,22 @@ class Picture extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
         return array(
             'plant_id' => 'required|exists:plants,id',
-            'picture'  => 'required'
+            'picture'  => 'required|file|mimes:png,jpeg,jpg'
         );
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
@@ -46,7 +50,9 @@ class Picture extends Model
     }
 
     /**
+     * Model's relationship with plants table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function plant()
     {

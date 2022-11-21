@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreInterventionRequest;
-use App\Http\Requests\UpdateInterventionRequest;
-use App\Models\Intervention;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\RewriteModelRules;
 use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Requests\StoreInterventionRequest;
+use App\Http\Requests\UpdateInterventionRequest;
+use App\Models\Intervention;
 use App\Repositories\InterventionRepository;
+use Illuminate\Http\Request;
 
 class InterventionController extends Controller
 {
@@ -47,12 +47,12 @@ class InterventionController extends Controller
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $plant_id = 1; //TODO
-        $inputs = $this->setRequestInputs($request, $plant_id);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $interventionRepository = new InterventionRepository($this->intervention);
 
@@ -72,7 +72,7 @@ class InterventionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreInterventionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreInterventionRequest $request)
     {
@@ -86,16 +86,30 @@ class InterventionController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $intervention = $this->intervention->find($id);
 
         if ($intervention == null)
             return $this->notFound();
 
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        $interventionRepository = new InterventionRepository($intervention);
+
+        $interventionRepository
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($plant_attr)
+            ->selectColumnsFromRelationship($class_attr)
+            ->selectColumnsFromRelationship($obs_attr);
+        
+        $intervention = $interventionRepository->getCollection();
+        
         return response()->json($intervention, 200, $this->headerOptions);
     }
 
@@ -104,7 +118,7 @@ class InterventionController extends Controller
      *
      * @param  \App\Http\Requests\UpdateInterventionRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateInterventionRequest $request, $id)
     {
@@ -127,7 +141,7 @@ class InterventionController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
@@ -143,21 +157,20 @@ class InterventionController extends Controller
     }
 
     /**
-     * Set all necessary request inputs in a suitable-to-use associative array form.
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
      * 
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    private function setRequestInputs(Request $request, $plant_id)
+    private function setRequestQueryParams(Request $request)
     {
-        $inputs = [];
-        $inputs['filter'] = $this->setFilters('filter', $request);
-        array_unshift($inputs['filter'], ['plant_id', '=', $plant_id]); //TODO
-
-        $inputs['attr'] = $this->setAttr('attr', $request);
-        $inputs['plant_attr'] = $this->setRelAttr('plant', 'plant_id', 'plant_attr', $request);
-        $inputs['class_attr'] = $this->setRelAttr('interventionClassification', 'intervention_classification_id', 'class_attr', $request);
-        $inputs['obs_attr'] = $this->setRelAttr('observations', 'id', 'obs_attr', $request);
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'plant_attr' => $this->setRelAttr('plant', 'id', 'plant_attr', $request),
+            'class_attr' => $this->setRelAttr('interventionClassification', 'id', 'class_attr', $request),
+            'obs_attr'   => $this->setRelAttr('observations', 'intervention_id', 'obs_attr', $request)
+        );
 
         return $inputs;
     }

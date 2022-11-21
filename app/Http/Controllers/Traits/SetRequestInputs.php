@@ -19,7 +19,7 @@ trait SetRequestInputs
             return [];
 
         $filters = explode(';', $request->get($input));
-        
+
         $filters = array_map(fn ($filter) => explode(':', $filter), $filters);
 
         return $filters;
@@ -52,15 +52,18 @@ trait SetRequestInputs
      * @param  \Illuminate\Http\Request  $request
      * @return string
      */
-    function setRelAttr(string $relationship, string $foreign, string $input, Request $request)
+    function setRelAttr(string $relationship, string $key, string $input, Request $request)
     {
-        if (!$this->validateInput($request, $input))
+        if (!$request->has($input))
+            return '';
+
+        if ($request->has($input) && $request->get($input) == null)
             return $relationship;
 
         $query = $relationship . ':';
 
-        if ($foreign)
-            $query .= $foreign . ',';
+        if ($key)
+            $query .= $key . ',';
 
         $query .= $request->get($input);
 

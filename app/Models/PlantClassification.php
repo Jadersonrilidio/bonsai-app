@@ -27,28 +27,31 @@ class PlantClassification extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
         return array(
-            'title' => "required|unique:plant_classifications,title,{$this->id}" //TODO
+            'title' => "required|unique:plant_classifications,title,{$this->id}"
         );
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
-        return array(
-            'title.required' => 'The title is required',
-            'title.unique'   => 'The title must be unique'
-        );
+        return array();
     }
 
     /**
+     * Model's relationship with plants table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function plants()
     {

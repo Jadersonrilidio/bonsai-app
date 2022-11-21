@@ -34,15 +34,16 @@ class Plant extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
         return array(
-            // 'user_id'                 => 'required|exists:users,id',
             'plant_classification_id' => 'required|exists:plant_classifications,id',
             'bonsai_style_id'         => 'required|exists:bonsai_styles,id',
-            'name'                    => 'required|min:3|max:64',
+            'name'                    => 'required|min:3|max:128',
             'specimen'                => 'string|max:128',
             'age'                     => 'date',
             'description'             => 'string',
@@ -52,7 +53,9 @@ class Plant extends Model
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
@@ -60,7 +63,9 @@ class Plant extends Model
     }
 
     /**
+     * Model's relationship with users table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
@@ -68,7 +73,9 @@ class Plant extends Model
     }
 
     /**
+     * Model's relationship with plant_classifications table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function plantClassification()
     {
@@ -76,7 +83,9 @@ class Plant extends Model
     }
 
     /**
+     * Model's relationship with bonsai_styles table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function bonsaiStyle()
     {
@@ -84,15 +93,19 @@ class Plant extends Model
     }
 
     /**
+     * Model's relationship with interventions table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function interventions()
+    public function interventions($int_class = 'interventionClassification', $obs = 'observations')
     {
-        return $this->hasMany('App\Models\Intervention', 'plant_id', 'id');
+        return $this->hasMany('App\Models\Intervention', 'plant_id', 'id')->with($int_class)->with($obs);
     }
 
     /**
+     * Model's relationship with pictures table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function pictures()
     {
@@ -100,7 +113,9 @@ class Plant extends Model
     }
 
     /**
+     * Model's relationship with videos table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function videos()
     {

@@ -29,7 +29,9 @@ class Intervention extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
@@ -37,12 +39,14 @@ class Intervention extends Model
             'plant_id'                       => 'required|exists:plants,id',
             'intervention_classification_id' => 'required|exists:intervention_classifications,id',
             'date'                           => 'required|date',
-            'description'                    => ''
+            'description'                    => 'string'
         );
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
@@ -50,7 +54,9 @@ class Intervention extends Model
     }
 
     /**
+     * Model's relationship with plants table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function plant()
     {
@@ -58,7 +64,9 @@ class Intervention extends Model
     }
 
     /**
+     * Model's relationship with intervention_classifications table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function interventionClassification()
     {
@@ -66,7 +74,9 @@ class Intervention extends Model
     }
 
     /**
+     * Model's relationship with observations table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function observations()
     {

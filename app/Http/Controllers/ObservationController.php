@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Http\Requests\StoreObservationRequest;
 use App\Http\Requests\UpdateObservationRequest;
 use App\Models\Observation;
-
-use Illuminate\Http\Request;
 use App\Repositories\ObservationRepository;
-use App\Http\Controllers\Traits\ErrorResponses;
-use App\Http\Controllers\Traits\RewriteModelRules;
+use Illuminate\Http\Request;
 
 class ObservationController extends Controller
 {
-    use ErrorResponses, RewriteModelRules;
+    use ErrorResponses,
+        RewriteModelRules,
+        SetRequestInputs;
 
     /**
      * Observation model instance.
@@ -45,24 +47,19 @@ class ObservationController extends Controller
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $filter = $request->get('filter') ?? '';
-        $attr = $request->get('attr') ?? '';
-        $int_attr = $request->get('int_attr') ?? '';
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $observationRepository = new ObservationRepository($this->observation);
 
-        if ($filter)
-            $observationRepository->filterRegistersFromModel($filter);
-
-        if ($attr)
-            $observationRepository->selectColumnsFromModel($attr);
-
-        if (str_contains($attr, 'intervention_id'))
-            $observationRepository->selectColumnsFromRelationship('intervention', $int_attr);
+        $observationRepository
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($int_attr);
 
         $observations = $observationRepository->getCollection();
 
@@ -73,7 +70,7 @@ class ObservationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreObservationRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreObservationRequest $request)
     {
@@ -87,12 +84,24 @@ class ObservationController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $observation = $this->observation->find($id);
+        $observation = $this->observation;
+
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        if ($attr)
+            $observation = $observation->select($attr);
+
+        if ($int_attr)
+            $observation = $observation->with($int_attr);
+
+        $observation = $observation->find($id);
 
         if ($observation == null)
             return $this->notFound();
@@ -105,7 +114,7 @@ class ObservationController extends Controller
      *
      * @param  \App\Http\Requests\UpdateObservationRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateObservationRequest $request, $id)
     {
@@ -128,7 +137,7 @@ class ObservationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
@@ -141,5 +150,22 @@ class ObservationController extends Controller
         $observation->delete();
 
         return response()->json($deletedObservation, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestQueryParams(Request $request)
+    {
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'int_attr'   => $this->setRelAttr('intervention', 'id', 'int_attr', $request)
+        );
+
+        return $inputs;
     }
 }

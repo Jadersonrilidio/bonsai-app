@@ -26,7 +26,9 @@ class InterventionClassification extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
@@ -36,18 +38,19 @@ class InterventionClassification extends Model
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
-        return array(
-            'title.required' => 'The title is required',
-            'title.unique'   => 'The title must be unique'
-        );
+        return array();
     }
 
     /**
+     * Model's relationship with interventions table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function interventions()
     {

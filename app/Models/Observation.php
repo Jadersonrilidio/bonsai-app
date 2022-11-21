@@ -27,7 +27,9 @@ class Observation extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
@@ -38,7 +40,9 @@ class Observation extends Model
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
@@ -46,7 +50,9 @@ class Observation extends Model
     }
 
     /**
+     * Model's relationship with interventions table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function intervention()
     {

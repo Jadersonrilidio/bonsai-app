@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Requests\StoreVideoRequest;
 use App\Http\Requests\UpdateVideoRequest;
 use App\Models\Video;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Traits\RewriteModelRules;
-use App\Http\Controllers\Traits\StandardStorage;
-use App\Http\Controllers\Traits\ErrorResponses;
-use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Repositories\VideoRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
     use ErrorResponses,
         RewriteModelRules,
-        StandardStorage,
-        SetRequestInputs;
+        SetRequestInputs,
+        StandardStorage;
 
     /**
      * Video model instance.
@@ -65,9 +65,8 @@ class VideoController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $this->setFilters('filter', $request);
-        $attr = $this->setAttr('attr', $request);
-        $plant_attr = $this->setRelAttr('plant', 'id', 'plant_attr', $request);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $videoRepository = new VideoRepository($this->video);
 
@@ -90,7 +89,7 @@ class VideoController extends Controller
     public function store(StoreVideoRequest $request)
     {
         $request->validate($this->video->rules(), $this->video->feedback());
-        
+
         $inputs = $request->all();
 
         if ($request->has('video')) {
@@ -106,12 +105,24 @@ class VideoController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $video = $this->video->find($id);
+        $video = $this->video;
+
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        if ($attr)
+            $video = $video->select($attr);
+
+        if ($plant_attr)
+            $video = $video->with($plant_attr);
+
+        $video = $video->find($id);
 
         if ($video == null)
             return $this->notFound();
@@ -169,5 +180,22 @@ class VideoController extends Controller
         $video->delete();
 
         return response($deletedVideo, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestQueryParams(Request $request)
+    {
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'plant_attr'  => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
+        );
+
+        return $inputs;
     }
 }

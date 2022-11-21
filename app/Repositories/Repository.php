@@ -33,11 +33,9 @@ abstract class Repository
      */
     public function filterRegistersFromModel(array $filters)
     {
-        if (!$this->validateArray($filters))
-            return $this;
-
-        foreach ($filters as $filter)
-            $this->model = $this->model->where($filter[0], $filter[1], $filter[2]);
+        if ($this->validateArray($filters))
+            foreach ($filters as $filter)
+                $this->model = $this->model->where($filter[0], $filter[1], $filter[2]);
 
         return $this;
     }
@@ -50,10 +48,8 @@ abstract class Repository
      */
     public function selectColumnsFromModel(array $attr)
     {
-        if (!$this->validateArray($attr))
-            return $this;
-
-        $this->model = $this->model->select($attr);
+        if ($this->validateArray($attr))
+            $this->model = $this->model->select($attr);
 
         return $this;
     }
@@ -66,12 +62,20 @@ abstract class Repository
      */
     public function selectColumnsFromRelationship(string $query)
     {
-        if (!$this->validateString($query))
-            return $this;
-
-        $this->model = $this->model->with($query);
+        if ($this->validateString($query))
+            $this->model = $this->model->with($query);
 
         return $this;
+    }
+
+    /**
+     * Return the current model's builder.
+     * 
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getBuilder()
+    {
+        return $this->model;
     }
 
     /**
@@ -94,8 +98,6 @@ abstract class Repository
     {
         return $this->model->paginate($registersPerPage);
     }
-
-    //TODO Helper methods                                                   
 
     /**
      * Assure whether is a valid array argument or not.

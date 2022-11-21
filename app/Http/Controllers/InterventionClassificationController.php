@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreInterventionClassificationRequest;
-use App\Http\Requests\UpdateInterventionClassificationRequest;
-use App\Models\InterventionClassification;
-use Illuminate\Http\Request;
-use App\Repositories\InterventionClassificationRepository;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\RewriteModelRules;
 use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Requests\StoreInterventionClassificationRequest;
+use App\Http\Requests\UpdateInterventionClassificationRequest;
+use App\Models\InterventionClassification;
+use App\Repositories\InterventionClassificationRepository;
+use Illuminate\Http\Request;
 
 class InterventionClassificationController extends Controller
 {
@@ -51,9 +51,8 @@ class InterventionClassificationController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $this->setFilters('filter', $request);
-        $attr = $this->setAttr('attr', $request);
-        $int_attr = $this->setRelAttr('interventions', 'intervention_classification_id', 'int_attr', $request);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $interventionClassificationRepository = new InterventionClassificationRepository($this->interventionClassification);
 
@@ -85,16 +84,28 @@ class InterventionClassificationController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $interventionClassification = $this->interventionClassification->find($id);
+        $interventionClassification = $this->interventionClassification;
+
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        if ($attr)
+            $interventionClassification = $interventionClassification->select($attr);
+
+        if ($int_attr)
+            $interventionClassification = $interventionClassification->with($int_attr);
+
+        $interventionClassification = $interventionClassification->find($id);
 
         if ($interventionClassification == null)
             return $this->notFound();
-        
+
         return response()->json($interventionClassification, 200, $this->headerOptions);
     }
 
@@ -111,7 +122,7 @@ class InterventionClassificationController extends Controller
 
         if ($interventionClassification == null)
             return $this->notFound();
-        
+
         $rules = $this->rewriteRules($request, $interventionClassification);
 
         $request->validate($rules, $interventionClassification->feedback());
@@ -140,5 +151,22 @@ class InterventionClassificationController extends Controller
         $interventionClassification->delete();
 
         return response()->json($deletedInterventionClassification, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestQueryParams(Request $request)
+    {
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'int_attr'  => $this->setRelAttr('interventions', 'intervention_classification_id', 'int_attr', $request)
+        );
+
+        return $inputs;
     }
 }

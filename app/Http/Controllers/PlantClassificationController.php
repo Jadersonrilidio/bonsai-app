@@ -2,25 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePlantClassificationRequest;
-use App\Http\Requests\UpdatePlantClassificationRequest;
-use App\Models\PlantClassification;
-
-use \Illuminate\Http\Request;
-use App\Repositories\PlantClassificationRepository;
 use App\Http\Controllers\Traits\ErrorResponses;
 use App\Http\Controllers\Traits\RewriteModelRules;
 use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Requests\StorePlantClassificationRequest;
+use App\Http\Requests\UpdatePlantClassificationRequest;
+use App\Models\PlantClassification;
+use App\Repositories\PlantClassificationRepository;
+use \Illuminate\Http\Request;
 
-/**
- * Controller class for api routes of model PlantClassification
- * 
- * @method index(Request $request) : JsonResponse
- * @method store(StorePlantClassificationRequest $request) : JsonResponse
- * @method show(integer $id) : JsonResponse
- * @method update(UpdatePlantClassificationRequest $request, integer $id) : JsonResponse
- * @method destroy(integer $id) : JsonResponse
- */
 class PlantClassificationController extends Controller
 {
     use ErrorResponses,
@@ -61,9 +51,8 @@ class PlantClassificationController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $this->setFilters('filter', $request);
-        $attr = $this->setAttr('attr', $request);
-        $plant_attr = $this->setRelAttr('plants', 'plant_classification_id', 'plant_attr', $request);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $plantClassificationRepository = new PlantClassificationRepository($this->plantClassification);
 
@@ -95,12 +84,24 @@ class PlantClassificationController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $plantClassification = $this->plantClassification->find($id);
+        $plantClassification = $this->plantClassification;
+
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        if ($attr)
+            $plantClassification = $plantClassification->select($attr);
+
+        if ($plant_attr)
+            $plantClassification = $plantClassification->with($plant_attr);
+
+        $plantClassification = $plantClassification->find($id);
 
         if ($plantClassification == null)
             return $this->notFound();
@@ -149,5 +150,22 @@ class PlantClassificationController extends Controller
         $plantClassification->delete();
 
         return response()->json($deletedPlantClassification, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestQueryParams(Request $request)
+    {
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'plant_attr'  => $this->setRelAttr('plants', 'plant_classification_id', 'plant_attr', $request)
+        );
+
+        return $inputs;
     }
 }

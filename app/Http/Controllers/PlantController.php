@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Requests\StorePlantRequest;
 use App\Http\Requests\UpdatePlantRequest;
 use App\Models\Plant;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Traits\RewriteModelRules;
-use App\Http\Controllers\Traits\StandardStorage;
-use App\Http\Controllers\Traits\ErrorResponses;
-use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Repositories\PlantRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PlantController extends Controller
 {
     use ErrorResponses,
         RewriteModelRules,
-        StandardStorage,
-        SetRequestInputs;
+        SetRequestInputs,
+        StandardStorage;
 
     /**
      * Plant model instance.
@@ -65,17 +65,20 @@ class PlantController extends Controller
      */
     public function index(Request $request)
     {
-        $inputs = $this->setRequestInputs($request);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $plantRepository = new PlantRepository($this->plant);
 
         $plantRepository
-            ->filterRegistersFromModel($inputs['filter'])
-            ->selectColumnsFromModel($inputs['attr'])
-            ->selectColumnsFromRelationship($inputs['user_attr'])
-            ->selectColumnsFromRelationship($inputs['class_attr'])
-            ->selectColumnsFromRelationship($inputs['style_attr'])
-            ->selectColumnsFromRelationship($inputs['pics_attr']);
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($user_attr)
+            ->selectColumnsFromRelationship($class_attr)
+            ->selectColumnsFromRelationship($style_attr)
+            ->selectColumnsFromRelationship($int_attr)
+            ->selectColumnsFromRelationship($pics_attr)
+            ->selectColumnsFromRelationship($vids_attr);
 
         $plants = $plantRepository->getCollection();
 
@@ -93,11 +96,11 @@ class PlantController extends Controller
         $request->validate($this->plant->rules(), $this->plant->feedback());
 
         $inputs = $request->all();
-        $inputs['user_id'] = auth()->user()->id; //todo
+        $inputs['user_id'] = auth()->user()->id;
 
         if ($request->has('main_picture')) {
             $image_urn = $this->storeImage($request, $this->storageVars);
-            $inputs = array_merge($inputs, ['main_picture' => $image_urn]);
+            $inputs['main_picture'] = $image_urn;
         }
 
         $newPlant = $this->plant->create($inputs);
@@ -119,21 +122,21 @@ class PlantController extends Controller
         if ($plant == null)
             return $this->notFound();
 
-        $inputs = $this->setRequestInputs($request);
+        if ($plant->user_id != auth()->user()->id)
+            return $this->forbidden();
+
+        extract($this->setRequestQueryParams($request));
 
         $plantRepository = new PlantRepository($plant);
 
-        $plantRepository->filterRegistersFromModel(array(
-            ['user_id', '=', auth()->user()->id]
-        ));
-
         $plantRepository
-            ->selectColumnsFromRelationship($inputs['user_attr'])
-            ->selectColumnsFromRelationship($inputs['class_attr'])
-            ->selectColumnsFromRelationship($inputs['style_attr'])
-            ->selectColumnsFromRelationship($inputs['int_attr'])
-            ->selectColumnsFromRelationship($inputs['pics_attr'])
-            ->selectColumnsFromRelationship($inputs['vids_attr']);
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($user_attr)
+            ->selectColumnsFromRelationship($class_attr)
+            ->selectColumnsFromRelationship($style_attr)
+            ->selectColumnsFromRelationship($int_attr)
+            ->selectColumnsFromRelationship($pics_attr)
+            ->selectColumnsFromRelationship($vids_attr);
 
         $plant = $plantRepository->getCollection();
 
@@ -155,7 +158,7 @@ class PlantController extends Controller
             return $this->notFound();
 
         if ($plant->user_id != auth()->user()->id)
-            return $this->unauthorized(); //todo
+            return $this->forbidden();
 
         $rules = $this->rewriteRules($request, $plant);
 
@@ -189,6 +192,9 @@ class PlantController extends Controller
         if ($plant == null)
             return $this->notFound();
 
+        if ($plant->user_id != auth()->user()->id)
+            return $this->forbidden();
+
         $deletedPlant = $plant;
         $plant->delete();
 
@@ -196,24 +202,25 @@ class PlantController extends Controller
     }
 
     /**
-     * Set all necessary request inputs in a suitable-to-use associative array form.
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
      * 
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    private function setRequestInputs(Request $request)
+    private function setRequestQueryParams(Request $request)
     {
-        $inputs = [];
-        $inputs['filter'] = $this->setFilters('filter', $request);
-        array_unshift($inputs['filter'], ['user_id', '=', auth()->user()->id]);
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'user_attr'  => $this->setRelAttr('user', 'id', 'user_attr', $request),
+            'class_attr' => $this->setRelAttr('plantClassification', 'id', 'class_attr', $request),
+            'style_attr' => $this->setRelAttr('bonsaiStyle', 'id', 'style_attr', $request),
+            'int_attr'   => $this->setRelAttr('interventions', 'plant_id', 'int_attr', $request),
+            'pics_attr'  => $this->setRelAttr('pictures', 'plant_id', 'pics_attr', $request),
+            'vids_attr'  => $this->setRelAttr('videos', 'plant_id', 'vids_attr', $request)
+        );
 
-        $inputs['attr'] = $this->setAttr('attr', $request);
-        $inputs['user_attr'] = $this->setRelAttr('user', 'id', 'user_attr', $request);
-        $inputs['class_attr'] = $this->setRelAttr('plantClassification', 'id', 'class_attr', $request);
-        $inputs['style_attr'] = $this->setRelAttr('bonsaiStyle', 'id', 'style_attr', $request);
-        $inputs['int_attr'] = $this->setRelAttr('interventions', 'plant_id', 'int_attr', $request);
-        $inputs['pics_attr'] = $this->setRelAttr('pictures', 'plant_id', 'pics_attr', $request);
-        $inputs['vids_attr'] = $this->setRelAttr('videos', 'plant_id', 'vids_attr', $request);
+        array_unshift($inputs['filter'], ['user_id', '=', auth()->user()->id]);
 
         return $inputs;
     }

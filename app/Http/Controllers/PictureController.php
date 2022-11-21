@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Requests\StorePictureRequest;
 use App\Http\Requests\UpdatePictureRequest;
 use App\Models\Picture;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Traits\RewriteModelRules;
-use App\Http\Controllers\Traits\StandardStorage;
-use App\Http\Controllers\Traits\ErrorResponses;
-use App\Http\Controllers\Traits\SetRequestInputs;
 use App\Repositories\PictureRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
 
 class PictureController extends Controller
 {
@@ -66,9 +65,8 @@ class PictureController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $this->setFilters('filter', $request);
-        $attr = $this->setAttr('attr', $request);
-        $plant_attr = $this->setRelAttr('plant', 'id', 'plant_attr', $request);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $pictureRepository = new PictureRepository($this->picture);
 
@@ -107,12 +105,24 @@ class PictureController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $picture = $this->picture->find($id);
+        $picture = $this->picture;
+
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        if ($attr)
+            $picture = $picture->select($attr);
+
+        if ($plant_attr)
+            $picture = $picture->with($plant_attr);
+
+        $picture = $picture->find($id);
 
         if ($picture == null)
             return $this->notFound();
@@ -170,5 +180,22 @@ class PictureController extends Controller
         $picture->delete();
 
         return response()->json($deletedPicture, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestQueryParams(Request $request)
+    {
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'plant_attr' => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
+        );
+
+        return $inputs;
     }
 }

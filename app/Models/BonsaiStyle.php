@@ -26,7 +26,9 @@ class BonsaiStyle extends Model
     ];
 
     /**
+     * Model's validation rules.
      * 
+     * @return array
      */
     public function rules()
     {
@@ -36,7 +38,9 @@ class BonsaiStyle extends Model
     }
 
     /**
+     * Model's rules' feedback.
      * 
+     * @return array
      */
     public function feedback()
     {
@@ -47,7 +51,9 @@ class BonsaiStyle extends Model
     }
 
     /**
+     * Model's relationship with plants table.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function plants()
     {

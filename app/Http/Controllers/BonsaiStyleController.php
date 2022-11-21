@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Traits\ErrorResponses;
+use App\Http\Controllers\Traits\RewriteModelRules;
+use App\Http\Controllers\Traits\SetRequestInputs;
+use App\Http\Controllers\Traits\StandardStorage;
 use App\Http\Requests\StoreBonsaiStyleRequest;
 use App\Http\Requests\UpdateBonsaiStyleRequest;
 use App\Models\BonsaiStyle;
 use App\Repositories\BonsaiStyleRepository;
-use App\Http\Controllers\Traits\ErrorResponses;
-use App\Http\Controllers\Traits\StandardStorage;
-use App\Http\Controllers\Traits\RewriteModelRules;
-use App\Http\Controllers\Traits\SetRequestInputs;
+use Illuminate\Http\Request;
 
 class BonsaiStyleController extends Controller
 {
     use ErrorResponses,
-        StandardStorage,
         RewriteModelRules,
-        SetRequestInputs;
+        SetRequestInputs,
+        StandardStorage;
 
     /**
      * BonsaiStyle model instance.
@@ -53,9 +53,8 @@ class BonsaiStyleController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $this->setFilters('filter', $request);
-        $attr = $this->setAttr('attr', $request);
-        $plant_attr = $this->setRelAttr('plants', 'bonsai_style_id', 'plant_attr', $request);
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
 
         $bonsaiStyleRepository = new BonsaiStyleRepository($this->bonsaiStyle);
 
@@ -87,12 +86,24 @@ class BonsaiStyleController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $bonsaiStyle = $this->bonsaiStyle->find($id);
+        $bonsaiStyle = $this->bonsaiStyle;
+
+        $data = $this->setRequestQueryParams($request);
+        extract($data);
+
+        if ($attr)
+            $bonsaiStyle = $bonsaiStyle->select($attr);
+
+        if ($plant_attr)
+            $bonsaiStyle = $bonsaiStyle->with($plant_attr);
+
+        $bonsaiStyle = $bonsaiStyle->find($id);
 
         if ($bonsaiStyle == null)
             return $this->notFound();
@@ -142,5 +153,22 @@ class BonsaiStyleController extends Controller
         $bonsaiStyle->delete();
 
         return response()->json($deletedBonsaiStyle, 200, $this->headerOptions);
+    }
+
+    /**
+     * Set all acceptable request query parameters in a suitable-to-use associative array form.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function setRequestQueryParams(Request $request)
+    {
+        $inputs = array(
+            'filter'     => $this->setFilters('filter', $request),
+            'attr'       => $this->setAttr('attr', $request),
+            'plant_attr' => $this->setRelAttr('plants', 'bonsai_style_id', 'plant_attr', $request)
+        );
+
+        return $inputs;
     }
 }
