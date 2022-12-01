@@ -25,9 +25,10 @@ Route::prefix('/v1')->group(function () {
     Route::apiResource('observation', 'App\Http\Controllers\ObservationController');
 });
 
-Route::prefix('/auth')->group(function () {
+Route::prefix('/v1/auth')->group(function () {
     Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
     Route::post('refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
     Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout']);
     Route::post('me', [App\Http\Controllers\AuthController::class, 'me']);
 });
+

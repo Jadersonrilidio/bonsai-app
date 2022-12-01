@@ -1,0 +1,2815 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Bonsai App API",
+        "description": "Bonsai App API to provide interoperability.",
+        "contact": {
+            "name": "Jaderson Rodrigues - Backend Developer",
+            "url": "https://www.jadersonrodrigues.com",
+            "email": "contato@jadersonrodrigues.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:{port}/api/{basePath}",
+            "description": "Standard local development server",
+            "variables": {
+                "port": {
+                    "default": "8000"
+                },
+                "basePath": {
+                    "default": "v1"
+                }
+            }
+        },
+        {
+            "url": "https://{appname}.herokuapp.com/api/{basePath}",
+            "description": "Heroku app production server",
+            "variables": {
+                "appname": {
+                    "default": "bonsaiapp"
+                },
+                "basePath": {
+                    "default": "v1"
+                }
+            }
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "summary": "JWT token authentication method.",
+                "description": "Authenticate users by email and password nad return a JWT bearer token if successful",
+                "tags": [
+                    "Authentication"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AuthLoginRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/AuthLoginSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                }
+            }
+        },
+        "/auth/me": {
+            "post": {
+                "summary": "User authentication data.",
+                "description": "User authentication data.",
+                "tags": [
+                    "Authentication"
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/AuthMeSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "summary": "Refresh token authorization.",
+                "description": "Refresh token authorization.",
+                "tags": [
+                    "Authentication"
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/AuthRefreshSuccessResponse" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "summary": "User authentication logout.",
+                "description": "User authentication logout.",
+                "tags": [
+                    "Authentication"
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/AuthLogoutSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/plant": {
+            "get": {
+                "summary": "Returns a list of plants from a given user",
+                "description": "Through parameter values, user can determine which Plant's attributes, relationships and relationships' attributes to include on the Plant object, by doing the following rule: <br> <b> - Parameter not set: </b> do not include the respective relationship; <br> <b> - Parameter set but empty: </b> include all attributes from a given relationship; <br> <b> - Parameter set and containing valid attributes: </b> include only the prescribed attributes. <br><br> <b> OBS1: </b> The 'filter' and 'attr', parameters do not accept empty values. <br> <b> OBS2: </b> Relationships in which its foreign key representative are not included on the 'attr' parameter will not be added, or may contain NULL or EMPTY values.",
+                "tags": [
+                    "Plant"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/filter" },
+                    { "$ref": "#/components/parameters/attr" },
+                    { "$ref": "#/components/parameters/user_attr" },
+                    { "$ref": "#/components/parameters/class_attr" },
+                    { "$ref": "#/components/parameters/style_attr" },
+                    { "$ref": "#/components/parameters/int_attr" },
+                    { "$ref": "#/components/parameters/pics_attr" },
+                    { "$ref": "#/components/parameters/vids_attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post" : {
+                "summary": "Create and store a Plant object on database.",
+                "description": "Create and store a Plant object on database.",
+                "tags": [
+                    "Plant"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PlantRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/PlantStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/plant/{id}": {
+            "get": {
+                "summary": "Return a Plant object by id.",
+                "description": "Through parameter values, user can determine which Plant's attributes, relationships and relationships' attributes to include on the Plant object, by doing the following rule: <br> <b> - Parameter not set: </b> do not include the respective relationship; <br> <b> - Parameter set but empty: </b> include all attributes from a given relationship; <br> <b> - Parameter set and containing valid attributes: </b> include only the prescribed attributes. <br><br> <b> OBS1: </b> The 'filter' and 'attr', parameters do not accept empty values. <br> <b> OBS2: </b> Relationships in which its foreign key representative are not included on the 'attr' parameter will not be added, or may contain NULL or EMPTY values.",
+                "tags": [
+                    "Plant"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" },
+                    { "$ref": "#/components/parameters/attr" },
+                    { "$ref": "#/components/parameters/user_attr" },
+                    { "$ref": "#/components/parameters/class_attr" },
+                    { "$ref": "#/components/parameters/style_attr" },
+                    { "$ref": "#/components/parameters/int_attr" },
+                    { "$ref": "#/components/parameters/pics_attr" },
+                    { "$ref": "#/components/parameters/vids_attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update a Plant object by id.",
+                "description": "Update a Plant object by id.",
+                "tags": [
+                    "Plant"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PlantRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update a Plant object by id.",
+                "description": "Update a Plant object by id.",
+                "tags": [
+                    "Plant"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PlantRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete Plant object by id.",
+                "description": "Delete Plant object by id.",
+                "tags": [
+                    "Plant"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/intervention": {
+            "get": {
+                "summary": "Returns a list of interventions",
+                "description": "Through parameter values, user can determine which Intervention's attributes, relationships and relationships' attributes to include on the Intervention object, by doing the following rule: <br> <b> - Parameter not set: </b> do not include the respective relationship; <br> <b> - Parameter set but empty: </b> include all attributes from a given relationship; <br> <b> - Parameter set and containing valid attributes: </b> include only the prescribed attributes. <br><br> <b> OBS1: </b> The 'filter' and 'attr', parameters do not accept empty values. <br> <b> OBS2: </b> Relationships in which its foreign key representative are not included on the 'attr' parameter will not be added, or may contain NULL or EMPTY values.",
+                "tags": [
+                    "Intervention"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/filter" },
+                    { "$ref": "#/components/parameters/attr" },
+                    { "$ref": "#/components/parameters/int_class_attr" },
+                    { "$ref": "#/components/parameters/obs_attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store Intervention object.",
+                "description": "Create and store Intervention object.",
+                "tags": [
+                    "Intervention"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/InterventionStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/intervention/{id}": {
+            "get": {
+                "summary": "Returns Intervention by id",
+                "description": "Through parameter values, user can determine which Intervention's attributes, relationships and relationships' attributes to include on the Intervention object, by doing the following rule: <br> <b> - Parameter not set: </b> do not include the respective relationship; <br> <b> - Parameter set but empty: </b> include all attributes from a given relationship; <br> <b> - Parameter set and containing valid attributes: </b> include only the prescribed attributes. <br><br> <b> OBS1: </b> The 'filter' and 'attr', parameters do not accept empty values. <br> <b> OBS2: </b> Relationships in which its foreign key representative are not included on the 'attr' parameter will not be added, or may contain NULL or EMPTY values.",
+                "tags": [
+                    "Intervention"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" },
+                    { "$ref": "#/components/parameters/attr" },
+                    { "$ref": "#/components/parameters/int_class_attr" },
+                    { "$ref": "#/components/parameters/obs_attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update Intervention object by id.",
+                "description": "Update Intervention object by id.",
+                "tags": [
+                    "Intervention"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update Intervention object by id.",
+                "description": "Update Intervention object by id.",
+                "tags": [
+                    "Intervention"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete Intervention object by id.",
+                "description": "Delete Intervention object by id.",
+                "tags": [
+                    "Intervention"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/observation": {
+            "get": {
+                "summary": "Returns a list of observations.",
+                "description": "Returns a list of observations.",
+                "tags": [
+                    "Observation"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/filter" },
+                    { "$ref": "#/components/parameters/attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/ObservationListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store Observation object.",
+                "description": "Create and store Observation object.",
+                "tags": [
+                    "Observation"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/ObservationRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/ObservationStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/observation/{id}": {
+            "get": {
+                "summary": "Returns Observation object by id.",
+                "description": "Returns Observation object by id.",
+                "tags": [
+                    "Observation"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/ObservationShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update Observation object by id.",
+                "description": "Update Observation object by id.",
+                "tags": [
+                    "Observation"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/ObservationRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/ObservationUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update Observation object by id.",
+                "description": "Update Observation object by id.",
+                "tags": [
+                    "Observation"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/ObservationRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/ObservationUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete Observation object by id.",
+                "description": "Delete Observation object by id.",
+                "tags": [
+                    "Observation"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/ObservationDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/picture": {
+            "get": {
+                "summary": "Returns a list of pictures.",
+                "description": "Returns a list of pictures.",
+                "tags": [
+                    "Picture"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/filter" },
+                    { "$ref": "#/components/parameters/attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PictureListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store Picture object.",
+                "description": "Create and store Picture object.",
+                "tags": [
+                    "Picture"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PictureRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/PictureStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/picture/{id}": {
+            "get": {
+                "summary": "Returns Picture object by id.",
+                "description": "Returns Picture object by id.",
+                "tags": [
+                    "Picture"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PictureShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update Picture object by id.",
+                "description": "Update Picture object by id.",
+                "tags": [
+                    "Picture"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PictureRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PictureUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update Picture object by id.",
+                "description": "Update Picture object by id.",
+                "tags": [
+                    "Picture"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PictureRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PictureUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete Picture object by id.",
+                "description": "Delete Picture object by id.",
+                "tags": [
+                    "Picture"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PictureDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/video": {
+            "get": {
+                "summary": "Returns a list of videos.",
+                "description": "Returns a list of videos.",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/filter" },
+                    { "$ref": "#/components/parameters/attr" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/VideoListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store Video object.",
+                "description": "Create and store Video object.",
+                "tags": [
+                    "Video"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/VideoRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/VideoStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/video/{id}": {
+            "get": {
+                "summary": "Returns Video object by id.",
+                "description": "Returns Video object by id.",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/VideoShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update Video object by id.",
+                "description": "Update Video object by id.",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/VideoRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/VideoUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update Video object by id.",
+                "description": "Update Video object by id.",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/VideoRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/VideoUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete Video object by id.",
+                "description": "Delete Video object by id.",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/VideoDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/plant-classification": {
+            "get": {
+                "summary": "Returns a list of plant classifications.",
+                "description": "Returns a list of plant classifications.",
+                "tags": [
+                    "PlantClassification"
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantClassificationListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store PlantClassification object.",
+                "description": "Create and store PlantClassification object.",
+                "tags": [
+                    "PlantClassification"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PlantClassificationRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/PlantClassificationStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/plant-classification/{id}": {
+            "get": {
+                "summary": "Returns PlantClassification object by id.",
+                "description": "Returns PlantClassification object by id.",
+                "tags": [
+                    "PlantClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantClassificationShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update PlantClassification object by id.",
+                "description": "Update PlantClassification object by id.",
+                "tags": [
+                    "PlantClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PlantClassificationRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantClassificationUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update PlantClassification object by id.",
+                "description": "Update PlantClassification object by id.",
+                "tags": [
+                    "PlantClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/PlantClassificationRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantClassificationUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete PlantClassification object by id.",
+                "description": "Delete PlantClassification object by id.",
+                "tags": [
+                    "PlantClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/PlantClassificationDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/bonsai-style": {
+            "get": {
+                "summary": "Returns a list of bonsai styles.",
+                "description": "Returns a list of bonsai styles.",
+                "tags": [
+                    "BonsaiStyle"
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/BonsaiStyleListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store BonsaiStyle object.",
+                "description": "Create and store BonsaiStyle object.",
+                "tags": [
+                    "BonsaiStyle"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/BonsaiStyleRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/BonsaiStyleStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/bonsai-style/{id}": {
+            "get": {
+                "summary": "Returns BonsaiStyle object by id.",
+                "description": "Returns BonsaiStyle object by id.",
+                "tags": [
+                    "BonsaiStyle"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/BonsaiStyleShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update BonsaiStyle object by id.",
+                "description": "Update BonsaiStyle object by id.",
+                "tags": [
+                    "BonsaiStyle"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/BonsaiStyleRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/BonsaiStyleUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update BonsaiStyle object by id.",
+                "description": "Update BonsaiStyle object by id.",
+                "tags": [
+                    "BonsaiStyle"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/BonsaiStyleRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/BonsaiStyleUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete BonsaiStyle object by id.",
+                "description": "Delete BonsaiStyle object by id.",
+                "tags": [
+                    "BonsaiStyle"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/BonsaiStyleDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/intervention-classification": {
+            "get": {
+                "summary": "Returns a list of intervention classifications.",
+                "description": "Returns a list of intervention classifications.",
+                "tags": [
+                    "InterventionClassification"
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionClassificationListSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "post": {
+                "summary": "Create and store InterventionClassification object.",
+                "description": "Create and store InterventionClassification object.",
+                "tags": [
+                    "InterventionClassification"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionClassificationRequestBody"
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/InterventionClassificationStoreSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        },
+        "/intervention-classification/{id}": {
+            "get": {
+                "summary": "Returns InterventionClassification object by id.",
+                "description": "Returns InterventionClassification object by id.",
+                "tags": [
+                    "InterventionClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionClassificationShowSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "put": {
+                "summary": "Update InterventionClassification object by id.",
+                "description": "Update InterventionClassification object by id.",
+                "tags": [
+                    "InterventionClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionClassificationRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionClassificationUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
+                "summary": "Update InterventionClassification object by id.",
+                "description": "Update InterventionClassification object by id.",
+                "tags": [
+                    "InterventionClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionClassificationRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionClassificationUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Delete InterventionClassification object by id.",
+                "description": "Delete InterventionClassification object by id.",
+                "tags": [
+                    "InterventionClassification"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionClassificationDeleteSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "500": { "$ref": "#/components/responses/ServerError" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Plant": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "plant_classification_id",
+                    "bonsai_style_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plant_classification_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "bonsai_style_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "specimen": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "age": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "height": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "main_picture": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "PlantClassification": {
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "BonsaiStyle": {
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Intervention": {
+                "type": "object",
+                "required": [
+                    "plant_id",
+                    "intervention_classification_id",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plant_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "intervention_classification_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "InterventionClassification": {
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Observation": {
+                "type": "object",
+                "required": [
+                    "intervention_id",
+                    "observation"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "intervention_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "observation": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Picture": {
+                "type": "object",
+                "required": [
+                    "plant_id",
+                    "picture"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plant_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "picture": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Video": {
+                "type": "object",
+                "required": [
+                    "plant_id",
+                    "video"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plant_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "video": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "PlantWithRelationships": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "plant_classification_id",
+                    "bonsai_style_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plant_classification_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "bonsai_style_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "specimen": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "age": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "height": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "main_picture": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "plantClassification": {
+                        "$ref": "#/components/schemas/PlantClassification"
+                    },
+                    "bonsaiStyle": {
+                        "$ref": "#/components/schemas/BonsaiStyle"
+                    },
+                    "interventions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Intervention"
+                        }
+                    },
+                    "pictures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Picture"
+                        }
+                    },
+                    "videos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Video"
+                        }
+                    }
+                }
+            },
+            "InterventionWithRelationships": {
+                "type": "object",
+                "required": [
+                    "plant_id",
+                    "intervention_classification_id",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plant_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "intervention_classification_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "interventionClassification": {
+                        "$ref": "#/components/schemas/InterventionClassification"
+                    },
+                    "observations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Observation"
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "description": "404 - Resource not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "example": {
+                            "error": "resource not found"
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "403 - Forbidden",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "example": {
+                            "error": "forbidden"
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "401 - Unauthorized",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "example": {
+                            "error": "unauthorized"
+                        }
+                    }
+                }
+            },
+            "UnprocessableContent": {
+                "description": "422 - Unprocessable Content",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "<attribute-name>": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "The given data was invalid.",
+                            "errors": {
+                                "<attribute-name>": ["<error description message>"]
+                            }
+                        }
+                    }
+                }
+            },
+            "ServerError": {
+                "description": "500 - Internal server error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "Internal server error"
+                        }
+                    }
+                }
+            },
+            "AuthLoginSuccessResponse": {
+                "description": "Login with uccess",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                },
+                                "token_type": {
+                                    "type": "string"
+                                },
+                                "expires_in": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "AuthLoginResponseContentExample": {
+                                "$ref": "#/components/examples/AuthLoginResponseContentExample"
+                            }
+                        }
+                    }
+                }
+            },
+            "AuthMeSuccessResponse": {
+                "description": "Success",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/User"
+                        },
+                        "examples": {
+                            "UserExample": {
+                                "$ref": "#/components/examples/UserExample"
+                            }
+                        }
+                    }
+                }
+            },
+            "AuthRefreshSuccessResponse": {
+                "description": "Success",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                },
+                                "token_type": {
+                                    "type": "string"
+                                },
+                                "expires_in": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "AuthRefreshResponseContentExample": {
+                                "$ref": "#/components/examples/AuthRefreshResponseContentExample"
+                            }
+                        }
+                    }
+                }
+            },
+            "AuthLogoutSuccessResponse": {
+                "description": "Logged out with uccess",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "AuthLogoutResponseContentExample": {
+                                "$ref": "#/components/examples/AuthLogoutResponseContentExample"
+                            }
+                        }
+                    }
+                }
+            },
+            "PlantListSuccessResponse": {
+                "description": "A list of Plants returned with success (with relationships, if requested).",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/PlantWithRelationships"
+                            }
+                        }
+                    }
+                }
+            },
+            "PlantStoreSuccessResponse": {
+                "description": "Plant created with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Plant"
+                        }
+                    }
+                }
+            },
+            "PlantShowSuccessResponse": {
+                "description": "Plant returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PlantWithRelationships"
+                        }
+                    }
+                }
+            },
+            "PlantUpdateSuccessResponse": {
+                "description": "Plant updated with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Plant"
+                        }
+                    }
+                }
+            },
+            "PlantDeleteSuccessResponse": {
+                "description": "Plant deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Plant"
+                        }
+                    }
+                }
+            },
+            "InterventionListSuccessResponse": {
+                "description": "A list of Interventions returned with success (with relationships, if requested).",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/InterventionWithRelationships"
+                            }
+                        }
+                    }
+                }
+            },
+            "InterventionStoreSuccessResponse": {
+                "description": "Intervention created with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Intervention"
+                        }
+                    }
+                }
+            },
+            "InterventionShowSuccessResponse": {
+                "description": "Intervention returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/InterventionWithRelationships"
+                        }
+                    }
+                }
+            },
+            "InterventionUpdateSuccessResponse": {
+                "description": "Intervention updated with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Intervention"
+                        }
+                    }
+                }
+            },
+            "InterventionDeleteSuccessResponse": {
+                "description": "Intervention deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Intervention"
+                        }
+                    }
+                }
+            },
+            "InterventionClassificationListSuccessResponse": {
+                "description": "A list of InterventionClassification returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/InterventionClassification"
+                            }
+                        }
+                    }
+                }
+            },
+            "InterventionClassificationStoreSuccessResponse": {
+                "description": "InterventionClassification created with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/InterventionClassification"
+                        }
+                    }
+                }
+            },
+            "InterventionClassificationShowSuccessResponse": {
+                "description": "A list of InterventionClassification returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/InterventionClassification"
+                        }
+                    }
+                }
+            },
+            "InterventionClassificationUpdateSuccessResponse": {
+                "description": "InterventionClassification updated with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/InterventionClassification"
+                        }
+                    }
+                }
+            },
+            "InterventionClassificationDeleteSuccessResponse": {
+                "description": "InterventionClassification deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/InterventionClassification"
+                        }
+                    }
+                }
+            },
+            "ObservationListSuccessResponse": {
+                "description": "A list of Observation returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Observation"
+                            }
+                        }
+                    }
+                }
+            },
+            "ObservationStoreSuccessResponse": {
+                "description": "Observation deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Observation"
+                        }
+                    }
+                }
+            },
+            "ObservationShowSuccessResponse": {
+                "description": "Observation deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Observation"
+                        }
+                    }
+                }
+            },
+            "ObservationUpdateSuccessResponse": {
+                "description": "Observation deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Observation"
+                        }
+                    }
+                }
+            },
+            "ObservationDeleteSuccessResponse": {
+                "description": "Observation deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Observation"
+                        }
+                    }
+                }
+            },
+            "PlantClassificationListSuccessResponse": {
+                "description": "A list of PlantClassification returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/PlantClassification"
+                            }
+                        }
+                    }
+                }
+            },
+            "PlantClassificationStoreSuccessResponse": {
+                "description": "PlantClassification deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PlantClassification"
+                        }
+                    }
+                }
+            },
+            "PlantClassificationShowSuccessResponse": {
+                "description": "PlantClassification deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PlantClassification"
+                        }
+                    }
+                }
+            },
+            "PlantClassificationUpdateSuccessResponse": {
+                "description": "PlantClassification deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PlantClassification"
+                        }
+                    }
+                }
+            },
+            "PlantClassificationDeleteSuccessResponse": {
+                "description": "PlantClassification deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PlantClassification"
+                        }
+                    }
+                }
+            },
+            "BonsaiStyleListSuccessResponse": {
+                "description": "A list of BonsaiStyle returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/BonsaiStyle"
+                            }
+                        }
+                    }
+                }
+            },
+            "BonsaiStyleStoreSuccessResponse": {
+                "description": "BonsaiStyle deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BonsaiStyle"
+                        }
+                    }
+                }
+            },
+            "BonsaiStyleShowSuccessResponse": {
+                "description": "BonsaiStyle deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BonsaiStyle"
+                        }
+                    }
+                }
+            },
+            "BonsaiStyleUpdateSuccessResponse": {
+                "description": "BonsaiStyle deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BonsaiStyle"
+                        }
+                    }
+                }
+            },
+            "BonsaiStyleDeleteSuccessResponse": {
+                "description": "BonsaiStyle deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/BonsaiStyle"
+                        }
+                    }
+                }
+            },
+            "PictureListSuccessResponse": {
+                "description": "A list of Picture returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Picture"
+                            }
+                        }
+                    }
+                }
+            },
+            "PictureStoreSuccessResponse": {
+                "description": "Picture deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Picture"
+                        }
+                    }
+                }
+            },
+            "PictureShowSuccessResponse": {
+                "description": "Picture deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Picture"
+                        }
+                    }
+                }
+            },
+            "PictureUpdateSuccessResponse": {
+                "description": "Picture deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Picture"
+                        }
+                    }
+                }
+            },
+            "PictureDeleteSuccessResponse": {
+                "description": "Picture deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Picture"
+                        }
+                    }
+                }
+            },
+            "VideoListSuccessResponse": {
+                "description": "A list of Video returned with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Video"
+                            }
+                        }
+                    }
+                }
+            },
+            "VideoStoreSuccessResponse": {
+                "description": "Video deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Video"
+                        }
+                    }
+                }
+            },
+            "VideoShowSuccessResponse": {
+                "description": "Video deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Video"
+                        }
+                    }
+                }
+            },
+            "VideoUpdateSuccessResponse": {
+                "description": "Video deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Video"
+                        }
+                    }
+                }
+            },
+            "VideoDeleteSuccessResponse": {
+                "description": "Video deleted with success.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Video"
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "ItemIdParameter": {
+                "name": "id",
+                "in": "path",
+                "description": "Item id.",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "1"
+            },
+            "filter": {
+                "name": "filter",
+                "in": "query",
+                "description": "Filters the objects list using the clause WHERE. The syntax must use double dots (:) to separate filter params and dot comma (;) to separate each filter, as follow as shown in the example bellow.",
+                "required": false,
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id:=:1;name:LIKE:ficus"
+            },
+            "attr": {
+                "name": "attr",
+                "in": "query",
+                "description": "Declare which attributes from the model should be selected using the SELECT clause. The syntax uses commas (,) to separate each attribute. EMPTY parameter value considers ALL attributes.",
+                "required": false,
+                "allowEmptyValue": false,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,user_id,plant_classification_id,bonsai_style_id,name,specimen,description,age,height,main_picture,created_at,updated_at"
+            },
+            "user_attr": {
+                "name": "user_attr",
+                "in": "query",
+                "description": "Add the User relationship to object as 'user'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,name,email,verified_at,createt_at,updated_at"
+            },
+            "class_attr": {
+                "name": "class_attr",
+                "in": "query",
+                "description": "Add the PlantClassification relationship to object as 'plantClassification'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,title,created_at,updated_at"
+            },
+            "style_attr": {
+                "name": "style_attr",
+                "in": "query",
+                "description": "Add the BonsaiStyle relationship to object as 'bonsaiStyle'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,title,created_at,updated_at"
+            },
+            "int_attr": {
+                "name": "int_attr",
+                "in": "query",
+                "description": "Add an array of Intervention relationship to object as 'interventions'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,plant_id,intervention_classification_id,descrition,date,created_at,updated_at"
+            },
+            "pics_attr": {
+                "name": "pics_attr",
+                "in": "query",
+                "description": "Add an array of Picture relationship to object as 'pictures'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,plant_id,picture,created_at,updated_at"
+            },
+            "vids_attr": {
+                "name": "vids_attr",
+                "in": "query",
+                "description": "Add an array of Video relationship to object as 'videos'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,plant_id,video,created_at,updated_at"
+            },
+            "int_class_attr": {
+                "name": "class_attr",
+                "in": "query",
+                "description": "Add the InterventionClassification relationship to object as 'interventionClassification'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,title,created_at,updated_at"
+            },
+            "obs_attr": {
+                "name": "obs_attr",
+                "in": "query",
+                "description": "Add an array of Observation relationship to object as 'observations'. Each attribute must be separated by comma (,). If paramater not declared, does not include the relationship; If parameter is declared and empty, returns all attributes from relationship.",
+                "required": false,
+                "allowEmptyValue": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "id,intervention_id,observation,created_at,updated_at"
+            }
+        },
+        "examples": {
+            "PlantExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "user_id": 1,
+                    "plant_classification_id": 1,
+                    "bonsai_style_id": 1,
+                    "name": "Yellow Ipe",
+                    "specimen": "Handroanthus Albus",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam cursus magna eu.",
+                    "age": "10-09-2021",
+                    "height": "126",
+                    "main_picture": "sample-asdfwefdsfaer1234qrasdwer6345ydfgjr567wtaweqfwerawrf",
+                    "created_at": "10-09-2021 12:59:59",
+                    "updated_at": "10-09-2021 12:59:59"
+                }
+            },
+            "UserExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "name": "Admin",
+                    "email": "email@example.com",
+                    "email_verified_at": "10-09-1987 00:00:00",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "BonsaiStyleExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "title": "Chokkan",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "PlantClassificationExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "title": "Bonsai",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "InterventionExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "intervention_classification_id": 1,
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat.",
+                    "date": "10-09-1987",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "InterventionClassificationExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "title": "Prunning",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "PictureExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "plant_id": 1,
+                    "picture": "sample-asd98f7qcocreqny4dwiuctyhkweafkdah4wi7aw4hnar4whdorqinyrgh4",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "VideoExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "plant_id": 1,
+                    "video": "sample-asd98f7qcocreqny4dwiuctyhkweafkdah4wi7aw4hnar4whdorqinyrgh4",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "ObservationExample": {
+                "summary": "",
+                "description": "",
+                "value": {
+                    "id": 1,
+                    "intervention_id": 1,
+                    "observation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat.",
+                    "created_at": "10-09-1987 00:00:00",
+                    "updated_at": "10-09-1987 00:00:00"
+                }
+            },
+            "AuthLoginResponseContentExample": {
+                "summary": "Success response object",
+                "description": "Success response object",
+                "value": {
+                    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6ODAwMFwvYXBpXC92MVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2Njk3MzUyNjgsImV4cCI6MTY2OTc3MTI2OCwibmJmIjoxNjY5NzM1MjY4LCJqdGkiOiJvdGVXRjNpUm1PQzR3YmZuIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.uSQ3WCt2JKJA7T40_r5nJpMRkbuqG5H9DZnCOhrZPg8",
+                    "token_type": "bearer",
+                    "expires_in": 36000
+                }
+            },
+            "AuthRefreshResponseContentExample": {
+                "summary": "Success response object",
+                "description": "Success response object",
+                "value": {
+                    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6ODAwMFwvYXBpXC92MVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2Njk3MzUyNjgsImV4cCI6MTY2OTc3MTI2OCwibmJmIjoxNjY5NzM1MjY4LCJqdGkiOiJvdGVXRjNpUm1PQzR3YmZuIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.uSQ3WCt2JKJA7T40_r5nJpMRkbuqG5H9DZnCOhrZPg8",
+                    "token_type": "bearer",
+                    "expires_in": 36000
+                }
+            },
+            "AuthLogoutResponseContentExample": {
+                "summary": "Success response object",
+                "description": "Success response object",
+                "value": {
+                    "message": "Susseccfully logged out"
+                }
+            }
+        },
+        "requestBodies": {
+            "AuthLoginRequestBody": {
+                "description": "Inform user email and password.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "description": "user email",
+                                    "example": "email@example.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "description": "user password",
+                                    "format": "password",
+                                    "example": "admin123"
+                                }
+                            }
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "description": "user registered email",
+                                    "example": "email@example.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "format": "password",
+                                    "description": "user password",
+                                    "example": "admin123"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "PlantRequestBody": {
+                "description": "Insert plant data.",
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "plant_classification_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant classification",
+                                    "example": 1
+                                },
+                                "bonsai_style_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant bonsai style",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "Plant common name",
+                                    "example": "Yellow Ipe"
+                                },
+                                "specimen": {
+                                    "type": "string",
+                                    "description": "Plant scientific name",
+                                    "example": "Handroanthus Albus"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Plant description",
+                                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
+                                },
+                                "main_picture": {
+                                    "type": "string",
+                                    "format": "binary",
+                                    "description": "Plant profile picture",
+                                    "example": "sample-sdafqwer234132rqfaji4y5fni47tywif48b7r"
+                                },
+                                "age": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "Plant age",
+                                    "example": "2022-10-09"
+                                },
+                                "height": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant height (centimeters)",
+                                    "example": "172"
+                                }
+                            },
+                            "encoding": {
+                                "main_picture": {
+                                    "contentType": [
+                                        "image/png",
+                                        "image/jpg",
+                                        "image/jpeg"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "InterventionRequestBody": {
+                "description": "Insert Intervention data.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "plant_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant id",
+                                    "example": 1
+                                },
+                                "intervention_classification_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Intervention classification",
+                                    "example": 1
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Intervention description",
+                                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
+                                },
+                                "date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "Intervention date",
+                                    "example": "2022-10-09"
+                                }
+                            }
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "plant_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant id",
+                                    "example": 1
+                                },
+                                "intervention_classification_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Intervention classification",
+                                    "example": 1
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Intervention description",
+                                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
+                                },
+                                "date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "Intervention date",
+                                    "example": "2022-10-09"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "ObservationRequestBody": {
+                "description": "Insert observation data.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "intervention_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Intervention id",
+                                    "example": 1
+                                },
+                                "observation": {
+                                    "type": "string",
+                                    "description": "Observation text",
+                                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
+                                }
+                            }
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "intervention_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Intervention id",
+                                    "example": 1
+                                },
+                                "observation": {
+                                    "type": "string",
+                                    "description": "Observation text",
+                                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "InterventionClassificationRequestBody": {
+                "description": "Insert intervention classification data.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Intervention classification title",
+                                    "example": "Prunning"
+                                }
+                            }
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Intervention classification title",
+                                    "example": "Prunning"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "PlantClassificatioRequestBody": {
+                "description": "Insert plant classification data.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Plant classification title",
+                                    "example": "Bonsai"
+                                }
+                            }
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Plant classification title",
+                                    "example": "Bonsai"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "BonsaiStyleRequestBody": {
+                "description": "Insert bonsai style data.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Bonsai style title",
+                                    "example": "Moyogui"
+                                }
+                            }
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Bonsai style title",
+                                    "example": "Moyogui"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "PictureRequestBody": {
+                "description": "Insert picture data and file.",
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "plant_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant id",
+                                    "example": 1
+                                },
+                                "picture": {
+                                    "type": "string",
+                                    "format": "binary",
+                                    "description": "Image file",
+                                    "example": ""
+                                }
+                            },
+                            "encoding": {
+                                "picture": {
+                                    "contentType": [
+                                        "image/png",
+                                        "image/jpg",
+                                        "image/jpeg"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "VideoRequestBody": {
+                "description": "Insert video data and file.",
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "plant_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "Plant id",
+                                    "example": 1
+                                },
+                                "video": {
+                                    "type": "string",
+                                    "format": "binary",
+                                    "description": "Video file",
+                                    "example": ""
+                                }
+                            },
+                            "encoding": {
+                                "video": {
+                                    "contentType": [
+                                        "video/mp4"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "JwtAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": ""
+        },
+        {
+            "name": "Plant",
+            "description": ""
+        },
+        {
+            "name": "Intervention",
+            "description": ""
+        },
+        {
+            "name": "Observation",
+            "description": ""
+        },
+        {
+            "name": "Picture",
+            "description": ""
+        },
+        {
+            "name": "Video",
+            "description": ""
+        },
+        {
+            "name": "PlantClassification",
+            "description": ""
+        },
+        {
+            "name": "InterventionClassification",
+            "description": ""
+        },
+        {
+            "name": "BonsaiStyle",
+            "description": ""
+        }
+    ]
+}
