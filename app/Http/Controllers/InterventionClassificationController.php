@@ -58,8 +58,7 @@ class InterventionClassificationController extends Controller
 
         $interventionClassificationRepository
             ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr)
-            ->selectColumnsFromRelationship($int_attr);
+            ->selectColumnsFromModel($attr);
 
         $interventionClassifications = $interventionClassificationRepository->getCollection();
 
@@ -84,24 +83,12 @@ class InterventionClassificationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $interventionClassification = $this->interventionClassification;
-
-        $data = $this->setRequestQueryParams($request);
-        extract($data);
-
-        if ($attr)
-            $interventionClassification = $interventionClassification->select($attr);
-
-        if ($int_attr)
-            $interventionClassification = $interventionClassification->with($int_attr);
-
-        $interventionClassification = $interventionClassification->find($id);
+        $interventionClassification = $this->interventionClassification->find($id);
 
         if ($interventionClassification == null)
             return $this->notFound();
@@ -163,8 +150,8 @@ class InterventionClassificationController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request),
-            'int_attr'  => $this->setRelAttr('interventions', 'intervention_classification_id', 'int_attr', $request)
+            'attr'       => $this->setAttr('attr', $request)
+            // 'int_attr'  => $this->setRelAttr('interventions', 'intervention_classification_id', 'int_attr', $request)
         );
 
         return $inputs;

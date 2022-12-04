@@ -58,8 +58,7 @@ class ObservationController extends Controller
 
         $observationRepository
             ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr)
-            ->selectColumnsFromRelationship($int_attr);
+            ->selectColumnsFromModel($attr);
 
         $observations = $observationRepository->getCollection();
 
@@ -84,24 +83,12 @@ class ObservationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $observation = $this->observation;
-
-        $data = $this->setRequestQueryParams($request);
-        extract($data);
-
-        if ($attr)
-            $observation = $observation->select($attr);
-
-        if ($int_attr)
-            $observation = $observation->with($int_attr);
-
-        $observation = $observation->find($id);
+        $observation = $this->observation->find($id);
 
         if ($observation == null)
             return $this->notFound();
@@ -162,8 +149,8 @@ class ObservationController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request),
-            'int_attr'   => $this->setRelAttr('intervention', 'id', 'int_attr', $request)
+            'attr'       => $this->setAttr('attr', $request)
+            // 'int_attr'   => $this->setRelAttr('intervention', 'id', 'int_attr', $request)
         );
 
         return $inputs;

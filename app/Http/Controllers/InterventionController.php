@@ -57,11 +57,11 @@ class InterventionController extends Controller
         $interventionRepository = new InterventionRepository($this->intervention);
 
         $interventionRepository
-            ->filterRegistersFromModel($inputs['filter'])
-            ->selectColumnsFromModel($inputs['attr'])
-            ->selectColumnsFromRelationship($inputs['plant_attr'])
-            ->selectColumnsFromRelationship($inputs['class_attr'])
-            ->selectColumnsFromRelationship($inputs['obs_attr']);
+            ->filterRegistersFromModel($filter)
+            ->selectColumnsFromModel($attr)
+            ->selectColumnsFromRelationship($plant_attr)
+            ->selectColumnsFromRelationship($class_attr)
+            ->selectColumnsFromRelationship($obs_attr);
 
         $interventions = $interventionRepository->getCollection();
 

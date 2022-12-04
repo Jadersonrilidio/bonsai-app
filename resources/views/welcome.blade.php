@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <img src="./images/bonsai-app-logo01.png" class="img-fluid" style="width:500px; margin:100px auto">
+        <img src="./images/bonsai-app-logo-oficial.png" class="img-fluid" style="width:450px; margin:50px auto">
     </div>
 </div>
 @endsection

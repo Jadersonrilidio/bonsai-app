@@ -28,7 +28,7 @@ return [
                 /*
                  * File name of the generated YAML documentation file
                 */
-                'docs_yaml' => 'api-docs.yaml',
+                'docs_yaml' => 'openapi.yaml',
 
                 /*
                 * Set this to `json` or `yaml` to determine which documentation file to use in UI

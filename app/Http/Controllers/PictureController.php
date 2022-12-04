@@ -72,8 +72,7 @@ class PictureController extends Controller
 
         $pictureRepository
             ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr)
-            ->selectColumnsFromRelationship($plant_attr);
+            ->selectColumnsFromModel($attr);
 
         $pictures = $pictureRepository->getCollection();
 
@@ -105,24 +104,12 @@ class PictureController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $picture = $this->picture;
-
-        $data = $this->setRequestQueryParams($request);
-        extract($data);
-
-        if ($attr)
-            $picture = $picture->select($attr);
-
-        if ($plant_attr)
-            $picture = $picture->with($plant_attr);
-
-        $picture = $picture->find($id);
+        $picture = $this->picture->find($id);
 
         if ($picture == null)
             return $this->notFound();
@@ -192,8 +179,8 @@ class PictureController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request),
-            'plant_attr' => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
+            'attr'       => $this->setAttr('attr', $request)
+            // 'plant_attr' => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
         );
 
         return $inputs;

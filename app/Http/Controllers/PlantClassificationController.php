@@ -58,8 +58,7 @@ class PlantClassificationController extends Controller
 
         $plantClassificationRepository
             ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr)
-            ->selectColumnsFromRelationship($plant_attr);
+            ->selectColumnsFromModel($attr);
 
         $plantClassifications = $plantClassificationRepository->getCollection();
 
@@ -84,24 +83,12 @@ class PlantClassificationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $plantClassification = $this->plantClassification;
-
-        $data = $this->setRequestQueryParams($request);
-        extract($data);
-
-        if ($attr)
-            $plantClassification = $plantClassification->select($attr);
-
-        if ($plant_attr)
-            $plantClassification = $plantClassification->with($plant_attr);
-
-        $plantClassification = $plantClassification->find($id);
+        $plantClassification = $this->plantClassification->find($id);
 
         if ($plantClassification == null)
             return $this->notFound();
@@ -162,8 +149,8 @@ class PlantClassificationController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request),
-            'plant_attr'  => $this->setRelAttr('plants', 'plant_classification_id', 'plant_attr', $request)
+            'attr'       => $this->setAttr('attr', $request)
+            // 'plant_attr'  => $this->setRelAttr('plants', 'plant_classification_id', 'plant_attr', $request)
         );
 
         return $inputs;

@@ -72,8 +72,7 @@ class VideoController extends Controller
 
         $videoRepository
             ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr)
-            ->selectColumnsFromRelationship($plant_attr);
+            ->selectColumnsFromModel($attr);
 
         $videos = $videoRepository->getCollection();
 
@@ -105,24 +104,12 @@ class VideoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $video = $this->video;
-
-        $data = $this->setRequestQueryParams($request);
-        extract($data);
-
-        if ($attr)
-            $video = $video->select($attr);
-
-        if ($plant_attr)
-            $video = $video->with($plant_attr);
-
-        $video = $video->find($id);
+        $video = $this->video->find($id);
 
         if ($video == null)
             return $this->notFound();
@@ -192,8 +179,8 @@ class VideoController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request),
-            'plant_attr'  => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
+            'attr'       => $this->setAttr('attr', $request)
+            // 'plant_attr'  => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
         );
 
         return $inputs;

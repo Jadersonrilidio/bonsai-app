@@ -84,6 +84,7 @@
                 ],
                 "responses": {
                     "200": { "$ref": "#/components/responses/AuthRefreshSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
                     "500": { "$ref": "#/components/responses/ServerError" }
                 },
                 "security": [
@@ -135,8 +136,8 @@
                 ]
             },
             "post" : {
-                "summary": "Create and store a Plant object on database.",
-                "description": "Create and store a Plant object on database.",
+                "summary": "Create and store a Plant object.",
+                "description": "Create and store a Plant object.",
                 "tags": [
                     "Plant"
                 ],
@@ -2399,7 +2400,7 @@
         },
         "requestBodies": {
             "AuthLoginRequestBody": {
-                "description": "Inform user email and password.",
+                "description": "Inform user email and password. <br><br> &emsp; (Remember that email and password must be from an already existent user, if you're not registered, go here: <b>https://localhost:8000/register</b>) ",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -2477,8 +2478,7 @@
                                 "main_picture": {
                                     "type": "string",
                                     "format": "binary",
-                                    "description": "Plant profile picture",
-                                    "example": "sample-sdafqwer234132rqfaji4y5fni47tywif48b7r"
+                                    "description": "Plant profile picture"
                                 },
                                 "age": {
                                     "type": "string",

@@ -178,12 +178,12 @@ class PlantController extends Controller
 
         $request->validate($rules, $plant->feedback());
 
-        if ($rules['main_picture'])
+        if (isset($rules['main_picture']) and $rules['main_picture'])
             Storage::disk('public')->delete($plant->main_picture);
 
         $plant->fill($request->all());
 
-        if ($rules['main_picture']) {
+        if (isset($rules['main_picture']) and $rules['main_picture']) {
             $main_picture = $this->storeImage($request, $this->storageVars);
             $plant->main_picture = $main_picture;
         }

@@ -60,8 +60,7 @@ class BonsaiStyleController extends Controller
 
         $bonsaiStyleRepository
             ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr)
-            ->selectColumnsFromRelationship($plant_attr);
+            ->selectColumnsFromModel($attr);
 
         $bonsaiStyles = $bonsaiStyleRepository->getCollection();
 
@@ -86,24 +85,12 @@ class BonsaiStyleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $bonsaiStyle = $this->bonsaiStyle;
-
-        $data = $this->setRequestQueryParams($request);
-        extract($data);
-
-        if ($attr)
-            $bonsaiStyle = $bonsaiStyle->select($attr);
-
-        if ($plant_attr)
-            $bonsaiStyle = $bonsaiStyle->with($plant_attr);
-
-        $bonsaiStyle = $bonsaiStyle->find($id);
+        $bonsaiStyle = $this->bonsaiStyle->find($id);
 
         if ($bonsaiStyle == null)
             return $this->notFound();
@@ -165,8 +152,8 @@ class BonsaiStyleController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request),
-            'plant_attr' => $this->setRelAttr('plants', 'bonsai_style_id', 'plant_attr', $request)
+            'attr'       => $this->setAttr('attr', $request)
+            // 'plant_attr' => $this->setRelAttr('plants', 'bonsai_style_id', 'plant_attr', $request)
         );
 
         return $inputs;

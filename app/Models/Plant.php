@@ -97,9 +97,9 @@ class Plant extends Model
      * 
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function interventions($int_class = 'interventionClassification', $obs = 'observations')
+    public function interventions()
     {
-        return $this->hasMany('App\Models\Intervention', 'plant_id', 'id')->with($int_class)->with($obs);
+        return $this->hasMany('App\Models\Intervention', 'plant_id', 'id');
     }
 
     /**
