@@ -20,6 +20,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
 /*
 | Website routes v1 - No controllers needed.
 |
