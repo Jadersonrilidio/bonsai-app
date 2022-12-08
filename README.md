@@ -3,7 +3,7 @@
 
 ## About the Project
 
-The Bonsai App was created with two main goals: Support bonsaists in general to catalogue and store historical data about their bonsai items in suitable, safier and more inteligent fashion, as well as provide material to develop a real-life project for github.com/Jadersonrilidios developed by Jaderson Rodrigues. See the author [github profile](https://github.com/Jadersonrilidio).
+The Bonsai App was created with two main goals: Support bonsaists in general to catalogue and store historical data about their bonsai items in suitable, safier and more inteligent fashion, as well as provide material to develop a real-life project. See the author [github profile](https://github.com/Jadersonrilidio).
 
 The **API documentation** is available at [API Documentation](https://bonsai-app.herokuapp.com/api/documentation).
 
