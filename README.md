@@ -23,6 +23,7 @@ Update and download all necessary PHP/Laravel dependencies with composer:
 Update and download all necessary frontend dependencies with npm package manager:
 
     $ npm install
+    $ npm update
     $ npm run dev
 
 Create and edit the .env file Database variables (It is recommended to configure a mysql database with the following setups):
