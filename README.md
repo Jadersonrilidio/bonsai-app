@@ -77,9 +77,9 @@ Also you can run updates made in the Vue frontend by using the commands:
 
 ## Contributing
 
-Thank you for considering contributing to the Transaction API Project! For contributing, please send an e-mail to Jaderson Rodrigues [contato@jadersonrodrigues.com](contato@jadersonrodrigues.com).
+Thank you for considering contributing to the Bonsai AP Project! For contributing, please send an e-mail to Jaderson Rodrigues [jaderson.rodrigues@yahoo.com](jaderson.rodrigues@yahoo.com).
 
 
 ## Security Vulnerabilities
 
-If you discover any security vulnerability within the project, please send an e-mail to please send an e-mail to Jaderson Rodrigues [contato@jadersonrodrigues.com](contato@jadersonrodrigues.com).
+If you discover any security vulnerability within the project, please send an e-mail to please send an e-mail to Jaderson Rodrigues [jaderson.rodrigues@yahoo.com](jaderson.rodrigues@yahoo.com).
