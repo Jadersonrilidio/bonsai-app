@@ -23,12 +23,12 @@ return [
                 /*
                  * File name of the generated json documentation file
                 */
-                'docs_json' => 'openapi.json',
+                'docs_json' => env('L5_SWAGGER_DOC_NAME_JSON', 'api-docs.json'),
 
                 /*
                  * File name of the generated YAML documentation file
                 */
-                'docs_yaml' => 'openapi.yaml',
+                'docs_yaml' => env('L5_SWAGGER_DOC_NAME_YAML', 'api-docs.yaml'),
 
                 /*
                 * Set this to `json` or `yaml` to determine which documentation file to use in UI

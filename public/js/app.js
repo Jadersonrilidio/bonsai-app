@@ -7433,7 +7433,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_0__["default"].Store({
     item: {},
     url: 'http://localhost:8000',
     apiurl: 'http://localhost:8000/api/v1',
-    apiauthurl: 'http://localhost:8000/api/auth',
+    apiauthurl: 'http://localhost:8000/api/v1/auth',
     plantClassificationId: null,
     plantId: null,
     plant: {
@@ -7561,7 +7561,7 @@ axios.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   if (error.response.status == 401 && error.response.data.message == 'Token has expired') {
-    axios.post('http://localhost:8000/api/auth/refresh').then(function (response) {
+    axios.post('http://localhost:8000/api/v1/auth/refresh').then(function (response) {
       document.cookie = 'token=' + response.data.access_token + ';SameSite=Lax';
       window.location.reload();
     })["catch"](function (errors) {

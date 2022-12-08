@@ -20,7 +20,7 @@ const store = new Vuex.Store({
         item: {},
         url: 'http://localhost:8000',
         apiurl: 'http://localhost:8000/api/v1',
-        apiauthurl: 'http://localhost:8000/api/auth',
+        apiauthurl: 'http://localhost:8000/api/v1/auth',
         plantClassificationId: null,
         plantId: null,
         plant: {

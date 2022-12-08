@@ -68,7 +68,7 @@ axios.interceptors.response.use(
     },
     error => {
         if (error.response.status == 401 && error.response.data.message == 'Token has expired') {
-            axios.post('http://localhost:8000/api/auth/refresh')
+            axios.post('http://localhost:8000/api/v1/auth/refresh')
                 .then(response => {
                     document.cookie = 'token=' + response.data.access_token + ';SameSite=Lax';
                     window.location.reload();
