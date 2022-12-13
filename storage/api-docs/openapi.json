@@ -4,23 +4,23 @@
         "title": "Bonsai App API",
         "description": "Bonsai App API to provide interoperability.",
         "contact": {
-            "name": "Jaderson Rodrigues - Backend Developer",
+            "name": "Jaderson Rodrigues",
             "url": "https://www.jadersonrodrigues.com",
-            "email": "contato@jadersonrodrigues.com"
+            "email": "jaderson.rodrigues@yahoo.com"
         },
         "license": {
             "name": "Apache 2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "1.0.0"
+        "version": "1"
     },
     "servers": [
         {
-            "url": "http://localhost:{port}/api/{basePath}",
-            "description": "Standard local development server",
+            "url": "https://{appname}.fly.dev/api/{basePath}",
+            "description": "Fly app production server",
             "variables": {
-                "port": {
-                    "default": "8000"
+                "appname": {
+                    "default": "bonsai-app"
                 },
                 "basePath": {
                     "default": "v1"
@@ -28,11 +28,11 @@
             }
         },
         {
-            "url": "https://{appname}.herokuapp.com/api/{basePath}",
-            "description": "Heroku app production server",
+            "url": "http://localhost:{port}/api/{basePath}",
+            "description": "Standard local development server",
             "variables": {
-                "appname": {
-                    "default": "bonsaiapp"
+                "port": {
+                    "default": "8000"
                 },
                 "basePath": {
                     "default": "v1"
@@ -54,7 +54,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/AuthLoginSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 }
             }
         },
@@ -68,7 +69,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/AuthMeSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -85,7 +87,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/AuthRefreshSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -102,7 +105,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/AuthLogoutSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -129,7 +133,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/PlantListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -142,13 +147,14 @@
                     "Plant"
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/PlantRequestBody"
+                    "$ref": "#/components/requestBodies/PlantStoreRequestBody"
                 },
                 "responses": {
                     "201": { "$ref": "#/components/responses/PlantStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -176,53 +182,34 @@
                     "200": { "$ref": "#/components/responses/PlantShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
                 ]
             },
-            "put": {
+            "post": {
                 "summary": "Update a Plant object by id.",
                 "description": "Update a Plant object by id.",
                 "tags": [
                     "Plant"
                 ],
                 "parameters": [
-                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                    {
+                        "$ref": "#/components/parameters/ItemIdParameter"
+                    }
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/PlantRequestBody"
+                    "$ref": "#/components/requestBodies/PlantUpdateRequestBody"
                 },
                 "responses": {
                     "200": { "$ref": "#/components/responses/PlantUpdateSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
-                },
-                "security": [
-                    { "JwtAuth": [] }
-                ]
-            },
-            "patch": {
-                "summary": "Update a Plant object by id.",
-                "description": "Update a Plant object by id.",
-                "tags": [
-                    "Plant"
-                ],
-                "parameters": [
-                    { "$ref": "#/components/parameters/ItemIdParameter" }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/PlantRequestBody"
-                },
-                "responses": {
-                    "200": { "$ref": "#/components/responses/PlantUpdateSuccessResponse" },
-                    "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "404": { "$ref": "#/components/responses/NotFound" },
-                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -241,7 +228,8 @@
                     "200": { "$ref": "#/components/responses/PlantDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -264,7 +252,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/InterventionListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -283,7 +272,8 @@
                     "201": { "$ref": "#/components/responses/InterventionStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -307,13 +297,14 @@
                     "200": { "$ref": "#/components/responses/InterventionShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
                 ]
             },
-            "put": {
+            "post": {
                 "summary": "Update Intervention object by id.",
                 "description": "Update Intervention object by id.",
                 "tags": [
@@ -330,30 +321,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
-                },
-                "security": [
-                    { "JwtAuth": [] }
-                ]
-            },
-            "patch": {
-                "summary": "Update Intervention object by id.",
-                "description": "Update Intervention object by id.",
-                "tags": [
-                    "Intervention"
-                ],
-                "parameters": [
-                    { "$ref": "#/components/parameters/ItemIdParameter" }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/InterventionRequestBody"
-                },
-                "responses": {
-                    "200": { "$ref": "#/components/responses/InterventionUpdateSuccessResponse" },
-                    "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "404": { "$ref": "#/components/responses/NotFound" },
-                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -372,7 +341,8 @@
                     "200": { "$ref": "#/components/responses/InterventionDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -393,7 +363,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/ObservationListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -412,7 +383,8 @@
                     "201": { "$ref": "#/components/responses/ObservationStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -433,7 +405,8 @@
                     "200": { "$ref": "#/components/responses/ObservationShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -456,7 +429,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -479,7 +453,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -498,7 +473,8 @@
                     "200": { "$ref": "#/components/responses/ObservationDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -519,7 +495,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/PictureListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -532,13 +509,14 @@
                     "Picture"
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/PictureRequestBody"
+                    "$ref": "#/components/requestBodies/PictureStoreRequestBody"
                 },
                 "responses": {
                     "201": { "$ref": "#/components/responses/PictureStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -559,13 +537,14 @@
                     "200": { "$ref": "#/components/responses/PictureShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
                 ]
             },
-            "put": {
+            "post": {
                 "summary": "Update Picture object by id.",
                 "description": "Update Picture object by id.",
                 "tags": [
@@ -575,37 +554,15 @@
                     { "$ref": "#/components/parameters/ItemIdParameter" }
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/PictureRequestBody"
+                    "$ref": "#/components/requestBodies/PictureUpdateRequestBody"
                 },
                 "responses": {
                     "200": { "$ref": "#/components/responses/PictureUpdateSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
-                },
-                "security": [
-                    { "JwtAuth": [] }
-                ]
-            },
-            "patch": {
-                "summary": "Update Picture object by id.",
-                "description": "Update Picture object by id.",
-                "tags": [
-                    "Picture"
-                ],
-                "parameters": [
-                    { "$ref": "#/components/parameters/ItemIdParameter" }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/PictureRequestBody"
-                },
-                "responses": {
-                    "200": { "$ref": "#/components/responses/PictureUpdateSuccessResponse" },
-                    "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "404": { "$ref": "#/components/responses/NotFound" },
-                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -624,7 +581,8 @@
                     "200": { "$ref": "#/components/responses/PictureDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -645,7 +603,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/VideoListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -658,13 +617,14 @@
                     "Video"
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/VideoRequestBody"
+                    "$ref": "#/components/requestBodies/VideoStoreRequestBody"
                 },
                 "responses": {
                     "201": { "$ref": "#/components/responses/VideoStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -685,13 +645,14 @@
                     "200": { "$ref": "#/components/responses/VideoShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
                 ]
             },
-            "put": {
+            "post": {
                 "summary": "Update Video object by id.",
                 "description": "Update Video object by id.",
                 "tags": [
@@ -701,37 +662,15 @@
                     { "$ref": "#/components/parameters/ItemIdParameter" }
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/VideoRequestBody"
+                    "$ref": "#/components/requestBodies/VideoUpdateRequestBody"
                 },
                 "responses": {
                     "200": { "$ref": "#/components/responses/VideoUpdateSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
-                },
-                "security": [
-                    { "JwtAuth": [] }
-                ]
-            },
-            "patch": {
-                "summary": "Update Video object by id.",
-                "description": "Update Video object by id.",
-                "tags": [
-                    "Video"
-                ],
-                "parameters": [
-                    { "$ref": "#/components/parameters/ItemIdParameter" }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/VideoRequestBody"
-                },
-                "responses": {
-                    "200": { "$ref": "#/components/responses/VideoUpdateSuccessResponse" },
-                    "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "404": { "$ref": "#/components/responses/NotFound" },
-                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -750,7 +689,8 @@
                     "200": { "$ref": "#/components/responses/VideoDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -767,7 +707,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/PlantClassificationListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -786,7 +727,8 @@
                     "201": { "$ref": "#/components/responses/PlantClassificationStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -807,7 +749,8 @@
                     "200": { "$ref": "#/components/responses/PlantClassificationShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -830,7 +773,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -853,7 +797,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -872,7 +817,8 @@
                     "200": { "$ref": "#/components/responses/PlantClassificationDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -889,7 +835,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/BonsaiStyleListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -908,7 +855,8 @@
                     "201": { "$ref": "#/components/responses/BonsaiStyleStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -929,7 +877,8 @@
                     "200": { "$ref": "#/components/responses/BonsaiStyleShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -952,7 +901,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -975,7 +925,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -994,7 +945,8 @@
                     "200": { "$ref": "#/components/responses/BonsaiStyleDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1011,7 +963,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/InterventionClassificationListSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1030,7 +983,8 @@
                     "201": { "$ref": "#/components/responses/InterventionClassificationStoreSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1051,7 +1005,8 @@
                     "200": { "$ref": "#/components/responses/InterventionClassificationShowSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1074,7 +1029,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1097,7 +1053,8 @@
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
                     "422": { "$ref": "#/components/responses/UnprocessableContent" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1116,7 +1073,8 @@
                     "200": { "$ref": "#/components/responses/InterventionClassificationDeleteSuccessResponse" },
                     "401": { "$ref": "#/components/responses/Unauthorized" },
                     "404": { "$ref": "#/components/responses/NotFound" },
-                    "500": { "$ref": "#/components/responses/ServerError" }
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
                 },
                 "security": [
                     { "JwtAuth": [] }
@@ -1128,11 +1086,6 @@
         "schemas": {
             "Plant": {
                 "type": "object",
-                "required": [
-                    "name",
-                    "plant_classification_id",
-                    "bonsai_style_id"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1168,7 +1121,8 @@
                         "format": "int32"
                     },
                     "main_picture": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "binary"
                     },
                     "created_at": {
                         "type": "string",
@@ -1178,7 +1132,21 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "encoding": {
+                    "main_picture": {
+                        "contentType": [
+                            "image/png",
+                            "image/jpg",
+                            "image/jpeg"
+                        ]
+                    }
+                },
+                "required": [
+                    "plant_classification_id",
+                    "bonsai_style_id",
+                    "name"
+                ]
             },
             "User": {
                 "type": "object",
@@ -1209,9 +1177,6 @@
             },
             "PlantClassification": {
                 "type": "object",
-                "required": [
-                    "title"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1228,13 +1193,13 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "title"
+                ]
             },
             "BonsaiStyle": {
                 "type": "object",
-                "required": [
-                    "title"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1251,15 +1216,13 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "title"
+                ]
             },
             "Intervention": {
                 "type": "object",
-                "required": [
-                    "plant_id",
-                    "intervention_classification_id",
-                    "description"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1288,13 +1251,15 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "plant_id",
+                    "intervention_classification_id",
+                    "description"
+                ]
             },
             "InterventionClassification": {
                 "type": "object",
-                "required": [
-                    "title"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1311,14 +1276,13 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "title"
+                ]
             },
             "Observation": {
                 "type": "object",
-                "required": [
-                    "intervention_id",
-                    "observation"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1339,14 +1303,14 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "intervention_id",
+                    "observation"
+                ]
             },
             "Picture": {
                 "type": "object",
-                "required": [
-                    "plant_id",
-                    "picture"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1367,14 +1331,14 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "plant_id",
+                    "picture"
+                ]
             },
             "Video": {
                 "type": "object",
-                "required": [
-                    "plant_id",
-                    "video"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1395,15 +1359,14 @@
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "plant_id",
+                    "video"
+                ]
             },
             "PlantWithRelationships": {
                 "type": "object",
-                "required": [
-                    "name",
-                    "plant_classification_id",
-                    "bonsai_style_id"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1476,15 +1439,15 @@
                             "$ref": "#/components/schemas/Video"
                         }
                     }
-                }
+                },
+                "required": [
+                    "name",
+                    "plant_classification_id",
+                    "bonsai_style_id"
+                ]
             },
             "InterventionWithRelationships": {
                 "type": "object",
-                "required": [
-                    "plant_id",
-                    "intervention_classification_id",
-                    "description"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1522,7 +1485,12 @@
                             "$ref": "#/components/schemas/Observation"
                         }
                     }
-                }
+                },
+                "required": [
+                    "plant_id",
+                    "intervention_classification_id",
+                    "description"
+                ]
             }
         },
         "responses": {
@@ -1626,6 +1594,24 @@
                         },
                         "example": {
                             "message": "Internal server error"
+                        }
+                    }
+                }
+            },
+            "BadRequest": {
+                "description": "Bad Request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "Bad request"
                         }
                     }
                 }
@@ -2408,12 +2394,10 @@
                             "properties": {
                                 "email": {
                                     "type": "string",
-                                    "description": "user email",
                                     "example": "email@example.com"
                                 },
                                 "password": {
                                     "type": "string",
-                                    "description": "user password",
                                     "format": "password",
                                     "example": "admin123"
                                 }
@@ -2426,13 +2410,11 @@
                             "properties": {
                                 "email": {
                                     "type": "string",
-                                    "description": "user registered email",
                                     "example": "email@example.com"
                                 },
                                 "password": {
                                     "type": "string",
                                     "format": "password",
-                                    "description": "user password",
                                     "example": "admin123"
                                 }
                             }
@@ -2441,7 +2423,7 @@
                 },
                 "required": true
             },
-            "PlantRequestBody": {
+            "PlantStoreRequestBody": {
                 "description": "Insert plant data.",
                 "content": {
                     "multipart/form-data": {
@@ -2451,46 +2433,38 @@
                                 "plant_classification_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant classification",
                                     "example": 1
                                 },
                                 "bonsai_style_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant bonsai style",
                                     "example": 1
                                 },
                                 "name": {
                                     "type": "string",
-                                    "description": "Plant common name",
-                                    "example": "Yellow Ipe"
+                                    "example": "Ficus Microcarpa"
                                 },
                                 "specimen": {
                                     "type": "string",
-                                    "description": "Plant scientific name",
-                                    "example": "Handroanthus Albus"
+                                    "example": "Ficus Microcarpa"
                                 },
                                 "description": {
                                     "type": "string",
-                                    "description": "Plant description",
                                     "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
-                                },
-                                "main_picture": {
-                                    "type": "string",
-                                    "format": "binary",
-                                    "description": "Plant profile picture"
                                 },
                                 "age": {
                                     "type": "string",
                                     "format": "date",
-                                    "description": "Plant age",
                                     "example": "2022-10-09"
                                 },
                                 "height": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant height (centimeters)",
-                                    "example": "172"
+                                    "example": "123"
+                                },
+                                "main_picture": {
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             },
                             "encoding": {
@@ -2501,11 +2475,82 @@
                                         "image/jpeg"
                                     ]
                                 }
-                            }
+                            },
+                            "required": [
+                                "plant_classification_id",
+                                "bonsai_style_id",
+                                "name"
+                            ]
                         }
                     }
-                },
-                "required": true
+                }
+            },
+            "PlantUpdateRequestBody": {
+                "description": "Insert plant data.",
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "_method": {
+                                    "type": "string",
+                                    "description": "Insert PUT or PATCH for update.",
+                                    "example": "PATCH"
+                                },
+                                "plant_classification_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 1
+                                },
+                                "bonsai_style_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Ficus Microcarpa"
+                                },
+                                "specimen": {
+                                    "type": "string",
+                                    "example": "Ficus Microcarpa"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
+                                },
+                                "age": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "example": "2022-10-09"
+                                },
+                                "height": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": "123"
+                                },
+                                "main_picture": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "encoding": {
+                                "main_picture": {
+                                    "contentType": [
+                                        "image/png",
+                                        "image/jpg",
+                                        "image/jpeg"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "plant_classification_id",
+                                "bonsai_style_id",
+                                "name"
+                            ]
+                        }
+                    }
+                }
             },
             "InterventionRequestBody": {
                 "description": "Insert Intervention data.",
@@ -2517,27 +2562,27 @@
                                 "plant_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant id",
                                     "example": 1
                                 },
                                 "intervention_classification_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Intervention classification",
                                     "example": 1
                                 },
                                 "description": {
                                     "type": "string",
-                                    "description": "Intervention description",
                                     "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
                                 },
                                 "date": {
                                     "type": "string",
                                     "format": "date",
-                                    "description": "Intervention date",
                                     "example": "2022-10-09"
                                 }
-                            }
+                            },
+                            "required": [
+                                "plant_id",
+                                "intervention_classification_id"
+                            ]
                         }
                     },
                     "multipart/form-data": {
@@ -2547,31 +2592,30 @@
                                 "plant_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant id",
                                     "example": 1
                                 },
                                 "intervention_classification_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Intervention classification",
                                     "example": 1
                                 },
                                 "description": {
                                     "type": "string",
-                                    "description": "Intervention description",
                                     "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
                                 },
                                 "date": {
                                     "type": "string",
                                     "format": "date",
-                                    "description": "Intervention date",
                                     "example": "2022-10-09"
                                 }
-                            }
+                            },
+                            "required": [
+                                "plant_id",
+                                "intervention_classification_id"
+                            ]
                         }
                     }
-                },
-                "required": true
+                }
             },
             "ObservationRequestBody": {
                 "description": "Insert observation data.",
@@ -2583,15 +2627,17 @@
                                 "intervention_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Intervention id",
                                     "example": 1
                                 },
                                 "observation": {
                                     "type": "string",
-                                    "description": "Observation text",
                                     "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
                                 }
-                            }
+                            },
+                            "required": [
+                                "intervention_id",
+                                "observation"
+                            ]
                         }
                     },
                     "multipart/form-data": {
@@ -2601,15 +2647,17 @@
                                 "intervention_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Intervention id",
                                     "example": 1
                                 },
                                 "observation": {
                                     "type": "string",
-                                    "description": "Observation text",
                                     "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pharetra ex a turpis pulvinar consequat. Vivamus."
                                 }
-                            }
+                            },
+                            "required": [
+                                "intervention_id",
+                                "observation"
+                            ]
                         }
                     }
                 }
@@ -2623,10 +2671,12 @@
                             "properties": {
                                 "title": {
                                     "type": "string",
-                                    "description": "Intervention classification title",
                                     "example": "Prunning"
                                 }
-                            }
+                            },
+                            "required": [
+                                "title"
+                            ]
                         }
                     },
                     "multipart/form-data": {
@@ -2635,10 +2685,12 @@
                             "properties": {
                                 "title": {
                                     "type": "string",
-                                    "description": "Intervention classification title",
                                     "example": "Prunning"
                                 }
-                            }
+                            },
+                            "required": [
+                                "title"
+                            ]
                         }
                     }
                 }
@@ -2652,10 +2704,12 @@
                             "properties": {
                                 "title": {
                                     "type": "string",
-                                    "description": "Plant classification title",
                                     "example": "Bonsai"
                                 }
-                            }
+                            },
+                            "required": [
+                                "title"
+                            ]
                         }
                     },
                     "multipart/form-data": {
@@ -2664,10 +2718,12 @@
                             "properties": {
                                 "title": {
                                     "type": "string",
-                                    "description": "Plant classification title",
                                     "example": "Bonsai"
                                 }
-                            }
+                            },
+                            "required": [
+                                "title"
+                            ]
                         }
                     }
                 }
@@ -2681,10 +2737,12 @@
                             "properties": {
                                 "title": {
                                     "type": "string",
-                                    "description": "Bonsai style title",
                                     "example": "Moyogui"
                                 }
-                            }
+                            },
+                            "required": [
+                                "title"
+                            ]
                         }
                     },
                     "multipart/form-data": {
@@ -2693,16 +2751,18 @@
                             "properties": {
                                 "title": {
                                     "type": "string",
-                                    "description": "Bonsai style title",
                                     "example": "Moyogui"
                                 }
-                            }
+                            },
+                            "required": [
+                                "title"
+                            ]
                         }
                     }
                 }
             },
-            "PictureRequestBody": {
-                "description": "Insert picture data and file.",
+            "PictureStoreRequestBody": {
+                "description": "Insert picture data.",
                 "content": {
                     "multipart/form-data": {
                         "schema": {
@@ -2711,14 +2771,11 @@
                                 "plant_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant id",
                                     "example": 1
                                 },
                                 "picture": {
                                     "type": "string",
-                                    "format": "binary",
-                                    "description": "Image file",
-                                    "example": ""
+                                    "format": "binary"
                                 }
                             },
                             "encoding": {
@@ -2729,13 +2786,56 @@
                                         "image/jpeg"
                                     ]
                                 }
-                            }
+                            },
+                            "required": [
+                                "plant_id",
+                                "picture"
+                            ]
+                        }
+                    }
+                }
+            },
+            "PictureUpdateRequestBody": {
+                "description": "Insert picture data.",
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "_method": {
+                                    "type": "string",
+                                    "description": "Insert PUT or PATCH for update.",
+                                    "example": "PATCH"
+                                },
+                                "plant_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 1
+                                },
+                                "picture": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "encoding": {
+                                "picture": {
+                                    "contentType": [
+                                        "image/png",
+                                        "image/jpg",
+                                        "image/jpeg"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "plant_id",
+                                "picture"
+                            ]
                         }
                     }
                 }
             },
             "VideoRequestBody": {
-                "description": "Insert video data and file.",
+                "description": "Insert video data.",
                 "content": {
                     "multipart/form-data": {
                         "schema": {
@@ -2744,13 +2844,11 @@
                                 "plant_id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "description": "Plant id",
                                     "example": 1
                                 },
                                 "video": {
                                     "type": "string",
                                     "format": "binary",
-                                    "description": "Video file",
                                     "example": ""
                                 }
                             },
@@ -2760,7 +2858,48 @@
                                         "video/mp4"
                                     ]
                                 }
-                            }
+                            },
+                            "required": [
+                                "plant_id",
+                                "video"
+                            ]
+                        }
+                    }
+                }
+            },
+            "VideoUpdateRequestBody": {
+                "description": "Insert video data.",
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "_method": {
+                                    "type": "string",
+                                    "description": "Insert PUT or PATCH for update.",
+                                    "example": "PATCH"
+                                },
+                                "plant_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 1
+                                },
+                                "video": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "encoding": {
+                                "video": {
+                                    "contentType": [
+                                        "video/mp4"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "plant_id",
+                                "video"
+                            ]
                         }
                     }
                 }
@@ -2776,40 +2915,31 @@
     },
     "tags": [
         {
-            "name": "Authentication",
-            "description": ""
+            "name": "Authentication"
         },
         {
-            "name": "Plant",
-            "description": ""
+            "name": "Plant"
         },
         {
-            "name": "Intervention",
-            "description": ""
+            "name": "Intervention"
         },
         {
-            "name": "Observation",
-            "description": ""
+            "name": "Observation"
         },
         {
-            "name": "Picture",
-            "description": ""
+            "name": "Picture"
         },
         {
-            "name": "Video",
-            "description": ""
+            "name": "Video"
         },
         {
-            "name": "PlantClassification",
-            "description": ""
+            "name": "PlantClassification"
         },
         {
-            "name": "InterventionClassification",
-            "description": ""
+            "name": "InterventionClassification"
         },
         {
-            "name": "BonsaiStyle",
-            "description": ""
+            "name": "BonsaiStyle"
         }
     ]
 }
