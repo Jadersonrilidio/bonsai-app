@@ -13,10 +13,6 @@ use App\Repositories\PlantRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-/**
- *     API Docs Annotation:
- * 
- */
 class PlantController extends Controller
 {
     use ErrorResponses,
@@ -27,7 +23,7 @@ class PlantController extends Controller
     /**
      * Plant model instance.
      * 
-     * @var App\Models\Plant
+     * @var \App\Models\Plant
      */
     protected $plant;
 
@@ -52,7 +48,7 @@ class PlantController extends Controller
     /**
      * PlantController class constructor method.
      * 
-     * @param  App\Models\Plant  $plant
+     * @param  \App\Models\Plant  $plant
      * @return void
      */
     public function __construct(Plant $plant)
@@ -62,16 +58,6 @@ class PlantController extends Controller
     }
 
     /**
-     *     API Docs Annotations:
-     * 
-     * @OA\Get(
-     *     path="/api/v1/plant",
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of plants of a given user"
-     *     )
-     * )
-     * 
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request

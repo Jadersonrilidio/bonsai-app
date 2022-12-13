@@ -304,7 +304,31 @@
                     { "JwtAuth": [] }
                 ]
             },
-            "post": {
+            "put": {
+                "summary": "Update Intervention object by id.",
+                "description": "Update Intervention object by id.",
+                "tags": [
+                    "Intervention"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/ItemIdParameter" }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/InterventionRequestBody"
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/InterventionUpdateSuccessResponse" },
+                    "401": { "$ref": "#/components/responses/Unauthorized" },
+                    "404": { "$ref": "#/components/responses/NotFound" },
+                    "422": { "$ref": "#/components/responses/UnprocessableContent" },
+                    "500": { "$ref": "#/components/responses/ServerError" },
+                    "default": { "$ref": "#/components/responses/BadRequest" }
+                },
+                "security": [
+                    { "JwtAuth": [] }
+                ]
+            },
+            "patch": {
                 "summary": "Update Intervention object by id.",
                 "description": "Update Intervention object by id.",
                 "tags": [
@@ -2172,7 +2196,7 @@
                 "schema": {
                     "type": "string"
                 },
-                "example": "id,name,email,verified_at,createt_at,updated_at"
+                "example": "id,name,email,email_verified_at,created_at,updated_at"
             },
             "class_attr": {
                 "name": "class_attr",
@@ -2205,7 +2229,7 @@
                 "schema": {
                     "type": "string"
                 },
-                "example": "id,plant_id,intervention_classification_id,descrition,date,created_at,updated_at"
+                "example": "id,plant_id,intervention_classification_id,description,date,created_at,updated_at"
             },
             "pics_attr": {
                 "name": "pics_attr",
