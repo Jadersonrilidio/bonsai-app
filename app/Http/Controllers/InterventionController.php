@@ -20,7 +20,7 @@ class InterventionController extends Controller
     /**
      * Intervention model instance.
      * 
-     * @var App\Model\Intervention
+     * @var \App\Model\Intervention
      */
     protected $intervention;
 
@@ -34,7 +34,7 @@ class InterventionController extends Controller
     /**
      * InterventionController class constructor method.
      * 
-     * @param  App\Models\Intervention  $intervention
+     * @param  \App\Models\Intervention  $intervention
      * @return void
      */
     public function __construct(Intervention $intervention)
@@ -129,7 +129,7 @@ class InterventionController extends Controller
 
         $rules = $this->rewriteRules($request, $intervention);
 
-        $request->validate($rules, $intervention);
+        $request->validate($rules, $intervention->feedback());
 
         $intervention->fill($request->all());
         $intervention->save();

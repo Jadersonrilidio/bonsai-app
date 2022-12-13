@@ -57,8 +57,7 @@ class PlantClassificationController extends Controller
         $plantClassificationRepository = new PlantClassificationRepository($this->plantClassification);
 
         $plantClassificationRepository
-            ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr);
+            ->filterRegistersFromModel($filter);
 
         $plantClassifications = $plantClassificationRepository->getCollection();
 
@@ -149,7 +148,7 @@ class PlantClassificationController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request)
+            // 'attr'       => $this->setAttr('attr', $request)
             // 'plant_attr'  => $this->setRelAttr('plants', 'plant_classification_id', 'plant_attr', $request)
         );
 

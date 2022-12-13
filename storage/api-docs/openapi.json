@@ -513,8 +513,7 @@
                     "Picture"
                 ],
                 "parameters": [
-                    { "$ref": "#/components/parameters/filter" },
-                    { "$ref": "#/components/parameters/attr" }
+                    { "$ref": "#/components/parameters/filter" }
                 ],
                 "responses": {
                     "200": { "$ref": "#/components/responses/PictureListSuccessResponse" },
@@ -621,8 +620,7 @@
                     "Video"
                 ],
                 "parameters": [
-                    { "$ref": "#/components/parameters/filter" },
-                    { "$ref": "#/components/parameters/attr" }
+                    { "$ref": "#/components/parameters/filter" }
                 ],
                 "responses": {
                     "200": { "$ref": "#/components/responses/VideoListSuccessResponse" },
@@ -2168,13 +2166,13 @@
             "filter": {
                 "name": "filter",
                 "in": "query",
-                "description": "Filters the objects list using the clause WHERE. The syntax must use double dots (:) to separate filter params and dot comma (;) to separate each filter, as follow as shown in the example bellow.",
+                "description": "Filters the objects list using the clause WHERE. The syntax must use double dots (:) to separate filter params and dot comma (;) to separate each filter, as shown in the example bellow. <br> id:=:1;name:LIKE:josh;date:<=:10-09-1987",
                 "required": false,
                 "allowEmptyValue": false,
                 "schema": {
                     "type": "string"
                 },
-                "example": "id:=:1;name:LIKE:ficus"
+                "example": "id:=:1"
             },
             "attr": {
                 "name": "attr",
@@ -2719,7 +2717,7 @@
                     }
                 }
             },
-            "PlantClassificatioRequestBody": {
+            "PlantClassificationRequestBody": {
                 "description": "Insert plant classification data.",
                 "content": {
                     "application/json": {
@@ -2858,7 +2856,7 @@
                     }
                 }
             },
-            "VideoRequestBody": {
+            "VideoStoreRequestBody": {
                 "description": "Insert video data.",
                 "content": {
                     "multipart/form-data": {

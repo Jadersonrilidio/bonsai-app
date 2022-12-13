@@ -71,8 +71,7 @@ class PictureController extends Controller
         $pictureRepository = new PictureRepository($this->picture);
 
         $pictureRepository
-            ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr);
+            ->filterRegistersFromModel($filter);
 
         $pictures = $pictureRepository->getCollection();
 
@@ -179,7 +178,7 @@ class PictureController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request)
+            // 'attr'       => $this->setAttr('attr', $request)
             // 'plant_attr' => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
         );
 

@@ -59,8 +59,7 @@ class BonsaiStyleController extends Controller
         $bonsaiStyleRepository = new BonsaiStyleRepository($this->bonsaiStyle);
 
         $bonsaiStyleRepository
-            ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr);
+            ->filterRegistersFromModel($filter);
 
         $bonsaiStyles = $bonsaiStyleRepository->getCollection();
 
@@ -152,7 +151,7 @@ class BonsaiStyleController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request)
+            // 'attr'       => $this->setAttr('attr', $request)
             // 'plant_attr' => $this->setRelAttr('plants', 'bonsai_style_id', 'plant_attr', $request)
         );
 

@@ -57,8 +57,7 @@ class InterventionClassificationController extends Controller
         $interventionClassificationRepository = new InterventionClassificationRepository($this->interventionClassification);
 
         $interventionClassificationRepository
-            ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr);
+            ->filterRegistersFromModel($filter);
 
         $interventionClassifications = $interventionClassificationRepository->getCollection();
 
@@ -150,7 +149,7 @@ class InterventionClassificationController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request)
+            // 'attr'       => $this->setAttr('attr', $request)
             // 'int_attr'  => $this->setRelAttr('interventions', 'intervention_classification_id', 'int_attr', $request)
         );
 

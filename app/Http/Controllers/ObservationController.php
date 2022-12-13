@@ -57,8 +57,7 @@ class ObservationController extends Controller
         $observationRepository = new ObservationRepository($this->observation);
 
         $observationRepository
-            ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr);
+            ->filterRegistersFromModel($filter);
 
         $observations = $observationRepository->getCollection();
 
@@ -149,7 +148,7 @@ class ObservationController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request)
+            // 'attr'       => $this->setAttr('attr', $request)
             // 'int_attr'   => $this->setRelAttr('intervention', 'id', 'int_attr', $request)
         );
 

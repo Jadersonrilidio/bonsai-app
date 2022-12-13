@@ -71,8 +71,7 @@ class VideoController extends Controller
         $videoRepository = new VideoRepository($this->video);
 
         $videoRepository
-            ->filterRegistersFromModel($filter)
-            ->selectColumnsFromModel($attr);
+            ->filterRegistersFromModel($filter);
 
         $videos = $videoRepository->getCollection();
 
@@ -179,7 +178,7 @@ class VideoController extends Controller
     {
         $inputs = array(
             'filter'     => $this->setFilters('filter', $request),
-            'attr'       => $this->setAttr('attr', $request)
+            // 'attr'       => $this->setAttr('attr', $request)
             // 'plant_attr'  => $this->setRelAttr('plant', 'id', 'plant_attr', $request)
         );
 

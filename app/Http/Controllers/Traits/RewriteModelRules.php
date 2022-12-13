@@ -10,8 +10,8 @@ trait RewriteModelRules
     /**
      * Rewrite the model rules.
      * 
-     * @param  Illuminate\Http\Request  $request
-     * @param  Illuminate\Database\Eloquent\Model  $carModel
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return array
      */
     private function rewriteRules(Request $request, Model $model)
