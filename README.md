@@ -1,11 +1,11 @@
-<p align="center"><a href="https://bonsai-app.herokuapp.com/about" target="_blank"><img src="./public/images/bonsai-app-api-logo.png" width="400"></a></p>
+<p align="center"><a href="https://bonsai-app.fly.dev/about" target="_blank"><img src="./public/images/bonsai-app-api-logo.png" width="400"></a></p>
 
 
 ## About the Project
 
 The Bonsai App was created with two main goals: Support bonsaists in general to catalogue and store historical data about their bonsai items in suitable, safier and more inteligent fashion, as well as provide material to develop a real-life project. See the author [github profile](https://github.com/Jadersonrilidio).
 
-The **API documentation** is available at [API Documentation](https://bonsai-app.herokuapp.com/api/documentation).
+The **API documentation** is available at [API Documentation](https://bonsai-app.fly.dev/api/documentation).
 
 
 ## Installation and Local Environment Setup
@@ -45,7 +45,6 @@ Set and configure all other environment variables for JWT token and API Document
     JWT_REFRESH_TTL=20160
 
     L5_SWAGGER_TITLE='API Documentation'
-    L5_SWAGGER_USE_ABSOLUTE_PATH=
     L5_FORMAT_TO_USE_FOR_DOCS=json
     L5_SWAGGER_CONST_HOST=http://localhost
     L5_SWAGGER_DOC_NAME_JSON='api-docs.json'
