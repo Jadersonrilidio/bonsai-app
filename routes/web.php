@@ -24,6 +24,10 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
+Route::fallback(function () {
+    return view('about', ["message" => "404 Not Found"]);
+});
+
 /*
 | Website routes v1 - No controllers needed.
 |
